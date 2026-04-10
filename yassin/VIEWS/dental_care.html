@@ -1,0 +1,954 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dental Care</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{box-sizing:border-box}
+    :root{
+      --bg:#ffffff;
+      --surface:#f5f6f8;
+      --surface2:#e9ecef;
+      --border:rgba(0,0,0,.15);
+      --text:#000000;
+      --muted:#495057;
+      --muted2:#5a6268;
+      --primary:#1a5cdb;
+      --primary2:#0d47a1;
+      --ok:#0f9d58;
+      --warn:#f57c00;
+      --bad:#d32f2f;
+      --shadow:0 12px 38px rgba(0,0,0,.15);
+      --radius:14px;
+      --mono:"DM Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans:"DM Sans", system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif;
+    }
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:var(--sans);
+      background:
+        radial-gradient(1200px 600px at 20% -10%, rgba(43,111,255,.08), transparent 60%),
+        radial-gradient(900px 500px at 90% 10%, rgba(32,201,151,.06), transparent 55%),
+        radial-gradient(1000px 700px at 40% 110%, rgba(250,82,82,.04), transparent 60%),
+        var(--bg);
+      color:var(--text);
+    }
+    a{color:inherit}
+    .wrap{max-width:1200px;margin:0 auto;padding:22px 16px 36px}
+    .topbar{
+      display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+      background:linear-gradient(180deg, rgba(0,0,0,.02), rgba(0,0,0,.01));
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      padding:14px 14px;
+      box-shadow:var(--shadow);
+    }
+    .brand{display:flex;align-items:center;gap:10px}
+    .logo{
+      width:42px;height:42px;border-radius:12px;
+      background:linear-gradient(135deg, rgba(43,111,255,.12), rgba(32,201,151,.10));
+      border:1px solid var(--border);
+      display:flex;align-items:center;justify-content:center;
+      font-size:20px;
+    }
+    .brand h1{margin:0;font-size:16px;font-weight:600;letter-spacing:.2px;color:#000000}
+    .brand p{margin:2px 0 0;color:#495057;font-size:12px}
+    .controls{margin-left:auto;display:flex;gap:10px;align-items:end;flex-wrap:wrap}
+    .field{display:flex;flex-direction:column;gap:6px}
+    .field label{font-size:12px;color:#495057;letter-spacing:.08em;text-transform:uppercase;font-weight:600}
+    .input, .select, .textarea{
+      font-family:var(--sans);
+      color:var(--text);
+      background:rgba(0,0,0,.02);
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:10px 12px;
+      outline:none;
+      min-width:170px;
+    }
+    .textarea{min-height:88px;resize:vertical}
+    .input::placeholder, .textarea::placeholder {
+      color: #868e96;
+      opacity: 1;
+    }
+    .input:focus,.select:focus,.textarea:focus{border-color:rgba(26,92,219,.50);box-shadow:0 0 0 3px rgba(26,92,219,.18)}
+    .btn{
+      border:1px solid var(--border);
+      background:rgba(0,0,0,.05);
+      color:#000000;
+      padding:10px 12px;
+      border-radius:12px;
+      cursor:pointer;
+      font-weight:700;
+      transition:transform .12s ease, background .12s ease, border-color .12s ease;
+    }
+    .btn:hover{background:rgba(0,0,0,.08)}
+    .btn:active{transform:translateY(1px)}
+    .btn.primary{background:linear-gradient(180deg, rgba(26,92,219,.20), rgba(13,71,161,.15));border-color:rgba(26,92,219,.45);color:#000000}
+    .btn.ok{background:linear-gradient(180deg, rgba(15,157,88,.20), rgba(15,157,88,.12));border-color:rgba(15,157,88,.45);color:#000000}
+    .btn.danger{background:linear-gradient(180deg, rgba(211,47,47,.20), rgba(211,47,47,.12));border-color:rgba(211,47,47,.45);color:#000000}
+    .grid{display:grid;gap:14px;margin-top:16px}
+    .card{
+      background:linear-gradient(180deg, rgba(0,0,0,.02), rgba(0,0,0,.01));
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:16px;
+    }
+    .card h2{margin:0 0 10px;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:#495057;font-weight:700}
+    .patientGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}
+    .kv{padding:10px 12px;border:1px solid var(--border);border-radius:12px;background:rgba(0,0,0,.03)}
+    .kv .k{font-size:12px;color:#495057;letter-spacing:.08em;text-transform:uppercase;font-weight:600}
+    .kv .v{margin-top:4px;font-weight:600;color:#000000}
+    .tabs{display:flex;gap:6px;flex-wrap:wrap;margin-top:14px}
+    .tab{padding:9px 12px;border-radius:999px;border:1px solid var(--border);background:rgba(0,0,0,.04);cursor:pointer;font-weight:600;font-size:13px;color:#495057}
+    .tab.active{background:rgba(26,92,219,.12);border-color:rgba(26,92,219,.40);color:#000000}
+    .panel{display:none}
+    .panel.active{display:block}
+    .formGrid{display:grid;grid-template-columns:repeat(12,1fr);gap:10px}
+    .col-12{grid-column:span 12}
+    .col-6{grid-column:span 6}
+    .col-4{grid-column:span 4}
+    .col-3{grid-column:span 3}
+    .rowActions{display:flex;gap:10px;justify-content:flex-end;align-items:center;margin-top:10px;flex-wrap:wrap}
+    .hint{color:#5a6268;font-size:13px}
+    table{width:100%;border-collapse:collapse;border:1px solid var(--border);border-radius:12px;overflow:hidden}
+    th,td{padding:10px 10px;border-bottom:1px solid rgba(0,0,0,.08);text-align:left;font-size:13px;vertical-align:top}
+    th{background:rgba(0,0,0,.05);color:#495057;font-size:12px;letter-spacing:.08em;text-transform:uppercase;font-weight:700}
+    td{color:#000000}
+    tr:last-child td{border-bottom:none}
+    .mono{font-family:var(--mono)}
+    .pill{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;border:1px solid var(--border);background:rgba(0,0,0,.04);font-size:12px;color:#495057;font-weight:600}
+    .pill.ok{border-color:rgba(15,157,88,.40);color:#0f9d58}
+    .pill.warn{border-color:rgba(245,124,0,.40);color:#f57c00}
+    .pill.bad{border-color:rgba(211,47,47,.40);color:#d32f2f}
+    .toast{
+      position:fixed;right:16px;bottom:16px;display:flex;flex-direction:column;gap:8px;z-index:9999
+    }
+    .toastItem{
+      max-width:380px;
+      border:1px solid var(--border);
+      background:rgba(248,249,250,.95);
+      backdrop-filter: blur(10px);
+      border-radius:14px;
+      padding:10px 12px;
+      box-shadow:var(--shadow);
+      color:var(--text);
+      transform:translateX(120%);
+      transition:transform .22s ease;
+      font-size:13px;
+    }
+    .toastItem.show{transform:translateX(0)}
+    .toastItem.success{border-color:rgba(41,212,154,.35)}
+    .toastItem.error{border-color:rgba(255,92,122,.35)}
+    @media (max-width:860px){
+      .controls{margin-left:0;width:100%}
+      .input, .select{min-width:140px}
+      .col-6,.col-4,.col-3{grid-column:span 12}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo">🦷</div>
+        <div>
+          <h1>Dental Care</h1>
+          <p>Structured clinical documentation</p>
+        </div>
+      </div>
+
+      <div class="controls">
+        <div class="field">
+          <label>Patient ID</label>
+          <input class="input mono" id="patientId" placeholder="e.g. 23795" />
+        </div>
+        <div class="field">
+          <label>Consultation</label>
+          <select class="select mono" id="consultationSelect">
+            <option value="">—</option>
+          </select>
+        </div>
+        <button class="btn primary" id="btnLoad">Load</button>
+        <button class="btn ok" id="btnNew">New Consultation</button>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <h2>1. Patient Details</h2>
+        <div class="patientGrid" id="patientGrid"></div>
+        <div class="hint" style="margin-top:10px">
+          Most patient details are read-only and pulled from existing records when available.
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="tabs" id="tabs"></div>
+
+        <div class="panel active" id="panel-consultation">
+          <h2>2. Consultation</h2>
+          <div class="formGrid">
+            <div class="col-6 field">
+              <label>Chief complaints</label>
+              <textarea class="textarea" id="chief_complaints" placeholder="Main patient complaints…"></textarea>
+            </div>
+            <div class="col-6 field">
+              <label>History of present illness</label>
+              <textarea class="textarea" id="history_present_illness" placeholder="Detailed history…"></textarea>
+            </div>
+
+            <div class="col-4 field">
+              <label>Immunization status (VAT)</label>
+              <select class="select" id="immune_status">
+                <option value="">—</option>
+                <option>Up to date</option>
+                <option>Incomplete</option>
+                <option>Not vaccinated</option>
+                <option>Unknown</option>
+              </select>
+            </div>
+            <div class="col-4 field">
+              <label>Gyneco-obstetrical history</label>
+              <input class="input" id="gyneco_obstetrical_history" placeholder="If applicable" />
+            </div>
+            <div class="col-4 field">
+              <label>Psychosocial status</label>
+              <input class="input" id="psychosocial_status" placeholder="Stress, support…" />
+            </div>
+
+            <div class="col-6 field">
+              <label>Lifestyle</label>
+              <input class="input" id="lifestyle" placeholder="Alcohol, tobacco, diet…" />
+            </div>
+            <div class="col-3 field">
+              <label>Allergies</label>
+              <select class="select" id="allergies">
+                <option value="0">No</option>
+                <option value="1">Yes</option>
+              </select>
+            </div>
+            <div class="col-3 field">
+              <label>Allergies details</label>
+              <input class="input" id="allergies_details" placeholder="If yes…" />
+            </div>
+
+            <div class="col-6 field">
+              <label>Family health status</label>
+              <input class="input" id="family_health_status" placeholder="Known family conditions…" />
+            </div>
+            <div class="col-6 field">
+              <label>Family medications history</label>
+              <input class="input" id="family_med_history" placeholder="Relevant meds history…" />
+            </div>
+
+            <div class="col-12" style="height:10px"></div>
+
+            <div class="col-3 field">
+              <label>Height (cm)</label>
+              <input class="input mono" id="height_cm" type="number" step="0.1" />
+            </div>
+            <div class="col-3 field">
+              <label>Weight (kg)</label>
+              <input class="input mono" id="weight_kg" type="number" step="0.1" />
+            </div>
+            <div class="col-3 field">
+              <label>BMI</label>
+              <input class="input mono" id="bmi" readonly />
+            </div>
+            <div class="col-3 field">
+              <label>BMI status</label>
+              <input class="input" id="bmi_status" readonly />
+            </div>
+
+            <div class="col-3 field">
+              <label>Systolic BP</label>
+              <input class="input mono" id="systolic_bp" type="number" />
+            </div>
+            <div class="col-3 field">
+              <label>Diastolic BP</label>
+              <input class="input mono" id="diastolic_bp" type="number" />
+            </div>
+            <div class="col-3 field">
+              <label>BP status</label>
+              <input class="input" id="bp_status" readonly />
+            </div>
+            <div class="col-3 field">
+              <label>Pulse (bpm)</label>
+              <input class="input mono" id="pulse_bpm" type="number" />
+            </div>
+
+            <div class="col-3 field">
+              <label>Respiratory rate</label>
+              <input class="input mono" id="respiratory_rate" type="number" />
+            </div>
+            <div class="col-3 field">
+              <label>Temperature (°C)</label>
+              <input class="input mono" id="temperature_c" type="number" step="0.1" />
+            </div>
+            <div class="col-3 field">
+              <label>O₂ saturation (SaO₂ %)</label>
+              <input class="input mono" id="oxygen_saturation" type="number" step="0.1" />
+            </div>
+            <div class="col-3 field">
+              <label>Pain score</label>
+              <input class="input mono" id="pain_score" type="number" min="0" max="10" />
+            </div>
+
+            <div class="col-6 field">
+              <label>Presumptive diagnosis</label>
+              <textarea class="textarea" id="presumptive_diagnosis"></textarea>
+            </div>
+            <div class="col-2 field">
+              <label>TB screening</label>
+              <select class="select" id="tb_screening">
+                <option value="">—</option>
+                <option>No symptoms</option>
+                <option>Presumptive TB</option>
+                <option>On TB treatment</option>
+                <option>History of TB</option>
+                <option>Unknown</option>
+                <option>Not done</option>
+              </select>
+            </div>
+            <div class="col-2 field">
+              <label>HIV status</label>
+              <select class="select" id="hiv_status">
+                <option value="">—</option>
+                <option>Negative</option>
+                <option>Positive</option>
+                <option>Unknown</option>
+                <option>Not done</option>
+              </select>
+            </div>
+            <div class="col-2 field">
+              <label>STI screening</label>
+              <select class="select" id="sti_screening">
+                <option value="">—</option>
+                <option>Negative</option>
+                <option>Positive</option>
+                <option>Unknown</option>
+                <option>Not done</option>
+                <option>Not applicable</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="rowActions">
+            <span class="pill" id="consultBadge">Consultation: —</span>
+            <button class="btn ok" id="btnSaveConsultation">Save consultation</button>
+          </div>
+        </div>
+
+        <div class="panel" id="panel-investigation">
+          <h2>3. Investigation</h2>
+          <div class="formGrid">
+            <div class="col-6 field">
+              <label>Examination / test name</label>
+              <input class="input" id="inv_exam_name" placeholder="e.g. X-ray…" />
+            </div>
+            <div class="col-4 field">
+              <label>Results</label>
+              <input class="input" id="inv_results" />
+            </div>
+            <div class="col-2 field">
+              <label>Date performed</label>
+              <input class="input mono" id="inv_performed_date" type="date" />
+            </div>
+          </div>
+          <div class="rowActions">
+            <button class="btn ok" id="btnAddInvestigation">Add</button>
+          </div>
+          <div style="margin-top:10px">
+            <table>
+              <thead><tr><th>#</th><th>Test</th><th>Results</th><th>Date</th><th></th></tr></thead>
+              <tbody id="invTable"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel" id="panel-diagnosis">
+          <h2>4. Final Diagnosis</h2>
+          <div class="formGrid">
+            <div class="col-6 field">
+              <label>Diagnosis name</label>
+              <input class="input" id="dx_name" />
+            </div>
+            <div class="col-3 field">
+              <label>Code (optional)</label>
+              <input class="input mono" id="dx_code" />
+            </div>
+            <div class="col-3 field">
+              <label>Date</label>
+              <input class="input mono" id="dx_date" type="date" />
+            </div>
+            <div class="col-12 field">
+              <label>Clinical notes (optional)</label>
+              <textarea class="textarea" id="dx_notes"></textarea>
+            </div>
+          </div>
+          <div class="rowActions"><button class="btn ok" id="btnAddDiagnosis">Add</button></div>
+          <div style="margin-top:10px">
+            <table>
+              <thead><tr><th>#</th><th>Name</th><th>Code</th><th>Date</th><th>Notes</th><th></th></tr></thead>
+              <tbody id="dxTable"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel" id="panel-treatment">
+          <h2>5. Treatment</h2>
+          <div class="formGrid">
+            <div class="col-4 field"><label>Medication</label><input class="input" id="tx_med" /></div>
+            <div class="col-2 field"><label>Dosage</label><input class="input" id="tx_dosage" /></div>
+            <div class="col-2 field"><label>Route</label><input class="input" id="tx_route" /></div>
+            <div class="col-2 field"><label>Frequency</label><input class="input" id="tx_frequency" /></div>
+            <div class="col-2 field"><label>Duration</label><input class="input" id="tx_duration" /></div>
+          </div>
+          <div class="rowActions"><button class="btn ok" id="btnAddTreatment">Add</button></div>
+          <div style="margin-top:10px">
+            <table>
+              <thead><tr><th>#</th><th>Medication</th><th>Dosage</th><th>Route</th><th>Frequency</th><th>Duration</th><th></th></tr></thead>
+              <tbody id="txTable"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel" id="panel-consumables">
+          <h2>6. Consumables</h2>
+          <div class="formGrid">
+            <div class="col-6 field"><label>Consumable</label><input class="input" id="co_name" /></div>
+            <div class="col-3 field"><label>Quantity</label><input class="input mono" id="co_qty" type="number" min="1" value="1" /></div>
+            <div class="col-3 field"><label>Date issued</label><input class="input mono" id="co_date" type="date" /></div>
+          </div>
+          <div class="rowActions"><button class="btn ok" id="btnAddConsumable">Add</button></div>
+          <div style="margin-top:10px">
+            <table>
+              <thead><tr><th>#</th><th>Name</th><th>Qty</th><th>Date</th><th></th></tr></thead>
+              <tbody id="coTable"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel" id="panel-discharge">
+          <h2>7. Discharge</h2>
+          <div class="formGrid">
+            <div class="col-4 field"><label>Discharging status</label><input class="input" id="discharging_status" /></div>
+            <div class="col-4 field"><label>Discharge date</label><input class="input mono" id="discharge_date" type="date" /></div>
+            <div class="col-4 field"><label>Discharging service</label><input class="input" id="discharging_service" /></div>
+            <div class="col-12 field"><label>Clinical summary</label><textarea class="textarea" id="clinical_summary"></textarea></div>
+          </div>
+          <div class="rowActions"><button class="btn ok" id="btnSaveDischarge">Save discharge</button></div>
+        </div>
+
+        <div class="panel" id="panel-followup">
+          <h2>8. General Follow-up</h2>
+          <div class="formGrid">
+            <div class="col-3 field"><label>Follow-up date</label><input class="input mono" id="fu_date" type="date" /></div>
+            <div class="col-3 field">
+              <label>Programmed visit</label>
+              <select class="select" id="fu_programmed">
+                <option value="0">No</option>
+                <option value="1">Yes</option>
+              </select>
+            </div>
+            <div class="col-3 field"><label>Next appointment (RDV)</label><input class="input mono" id="fu_next" type="date" /></div>
+            <div class="col-3 field"><label>Complaint diagnosis</label><input class="input" id="fu_complaint" /></div>
+            <div class="col-6 field"><label>Conclusion of examination</label><textarea class="textarea" id="fu_conclusion"></textarea></div>
+            <div class="col-6 field"><label>Treatment & comments / management</label><textarea class="textarea" id="fu_treatment"></textarea></div>
+          </div>
+          <div class="rowActions"><button class="btn ok" id="btnAddFollowup">Add follow-up</button></div>
+          <div style="margin-top:10px">
+            <table>
+              <thead><tr><th>#</th><th>Date</th><th>Programmed</th><th>Conclusion</th><th>Next RDV</th><th>Complaint/Dx</th><th>Management</th><th></th></tr></thead>
+              <tbody id="fuTable"></tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const API = './api/dental.php';
+
+    const TABS = [
+      ['consultation','Consultation'],
+      ['investigation','Investigation'],
+      ['diagnosis','Final Diagnosis'],
+      ['treatment','Treatment'],
+      ['consumables','Consumables'],
+      ['discharge','Discharge'],
+      ['followup','Follow-up'],
+    ];
+
+    const state = {
+      patientId: null,
+      consultationId: null,
+      patient: null,
+      consultations: [],
+    };
+
+    function $(id){return document.getElementById(id)}
+    function toast(msg, type='info'){
+      const wrap = $('toast');
+      const el = document.createElement('div');
+      el.className = 'toastItem ' + (type === 'success' ? 'success' : type === 'error' ? 'error' : '');
+      el.textContent = msg;
+      wrap.appendChild(el);
+      requestAnimationFrame(()=>{ el.classList.add('show'); });
+      setTimeout(()=>{ el.classList.remove('show'); setTimeout(()=>el.remove(), 250); }, 2800);
+    }
+
+    async function api(action, payload = {}){
+      const res = await fetch(API, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({action, ...payload}),
+      });
+      const data = await res.json().catch(()=>null);
+      if (!data || typeof data.success !== 'boolean') throw new Error('Invalid server response');
+      if (!data.success) throw new Error(data.message || 'Request failed');
+      return data.data;
+    }
+
+    function setConsultBadge(){
+      $('consultBadge').textContent = state.consultationId ? `Consultation: #${state.consultationId}` : 'Consultation: —';
+    }
+
+    function renderPatient(p){
+      const grid = $('patientGrid');
+      const fields = [
+        ['Patient', p?.patient_id ? `${p.patient_id}${p.patient_name ? ' — ' + p.patient_name : ''}` : '—'],
+        ['Insurance', p?.insurance ?? '—'],
+        ['Consultation date', p?.consultation_date ?? '—'],
+        ['Catchment area', p?.catchment_area ?? '—'],
+        ['Province', p?.province ?? '—'],
+        ['District', p?.district ?? '—'],
+        ['Sector', p?.sector ?? '—'],
+        ['Cell', p?.cell ?? '—'],
+        ['Village', p?.village ?? '—'],
+      ];
+      grid.innerHTML = '';
+      fields.forEach(([k,v])=>{
+        const el = document.createElement('div');
+        el.className = 'kv';
+        el.innerHTML = `<div class="k">${k}</div><div class="v">${escapeHtml(String(v))}</div>`;
+        grid.appendChild(el);
+      });
+    }
+
+    function escapeHtml(s){
+      return s.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'","&#039;");
+    }
+
+    function wireTabs(){
+      const tabs = $('tabs');
+      tabs.innerHTML = '';
+      TABS.forEach(([id,label], i)=>{
+        const b = document.createElement('button');
+        b.className = 'tab' + (i===0 ? ' active' : '');
+        b.textContent = label;
+        b.onclick = ()=> showTab(id);
+        tabs.appendChild(b);
+      });
+    }
+
+    function showTab(id){
+      document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+      document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+      const idx = TABS.findIndex(t=>t[0]===id);
+      document.querySelectorAll('.tab')[idx]?.classList.add('active');
+      $('panel-' + id).classList.add('active');
+    }
+
+    function calcBmiBp(){
+      const h = parseFloat($('height_cm').value);
+      const w = parseFloat($('weight_kg').value);
+      const sys = parseInt($('systolic_bp').value, 10);
+      const dia = parseInt($('diastolic_bp').value, 10);
+
+      if (Number.isFinite(h) && Number.isFinite(w) && h > 0 && w > 0){
+        const bmi = +(w / ((h/100)**2)).toFixed(2);
+        $('bmi').value = bmi;
+        $('bmi_status').value = bmi < 18.5 ? 'Underweight' : bmi < 25 ? 'Normal' : bmi < 30 ? 'Overweight' : 'Obese';
+      } else {
+        $('bmi').value = '';
+        $('bmi_status').value = '';
+      }
+
+      if (Number.isFinite(sys) && Number.isFinite(dia)){
+        $('bp_status').value =
+          (sys < 120 && dia < 80) ? 'Normal' :
+          (sys < 130 && dia < 80) ? 'Elevated' :
+          (sys < 140 || dia < 90) ? 'High Stage 1' :
+          'High Stage 2';
+      } else {
+        $('bp_status').value = '';
+      }
+    }
+
+    function fillConsultationForm(c){
+      const keys = [
+        'chief_complaints','history_present_illness','immune_status','gyneco_obstetrical_history',
+        'lifestyle','psychosocial_status','allergies','allergies_details','family_health_status','family_med_history',
+        'height_cm','weight_kg','bmi','bmi_status','systolic_bp','diastolic_bp','bp_status','pulse_bpm','respiratory_rate',
+        'temperature_c','oxygen_saturation','pain_score',
+        'presumptive_diagnosis','tb_screening','hiv_status','sti_screening',
+      ];
+      keys.forEach(k=>{
+        const el = $(k);
+        if (!el) return;
+        const v = (c && c[k] !== undefined && c[k] !== null) ? c[k] : '';
+        el.value = String(v);
+      });
+      calcBmiBp();
+    }
+
+    function collectConsultationPayload(){
+      const payload = {
+        patient_id: state.patientId,
+        chief_complaints: $('chief_complaints').value,
+        history_present_illness: $('history_present_illness').value,
+        immune_status: $('immune_status').value,
+        gyneco_obstetrical_history: $('gyneco_obstetrical_history').value,
+        lifestyle: $('lifestyle').value,
+        psychosocial_status: $('psychosocial_status').value,
+        allergies: parseInt($('allergies').value, 10),
+        allergies_details: $('allergies_details').value,
+        family_health_status: $('family_health_status').value,
+        family_med_history: $('family_med_history').value,
+        height_cm: $('height_cm').value,
+        weight_kg: $('weight_kg').value,
+        systolic_bp: $('systolic_bp').value,
+        diastolic_bp: $('diastolic_bp').value,
+        pulse_bpm: $('pulse_bpm').value,
+        respiratory_rate: $('respiratory_rate').value,
+        temperature_c: $('temperature_c').value,
+        oxygen_saturation: $('oxygen_saturation').value,
+        pain_score: $('pain_score').value,
+        presumptive_diagnosis: $('presumptive_diagnosis').value,
+        tb_screening: $('tb_screening').value,
+        hiv_status: $('hiv_status').value,
+        sti_screening: $('sti_screening').value,
+      };
+      Object.keys(payload).forEach(k=>{
+        if (payload[k] === '') payload[k] = null;
+      });
+      return payload;
+    }
+
+    function renderSelectConsultations(list){
+      const sel = $('consultationSelect');
+      sel.innerHTML = '<option value="">—</option>';
+      list.forEach(c=>{
+        const opt = document.createElement('option');
+        opt.value = c.id;
+        opt.textContent = `#${c.id} — ${c.created_at ?? ''}`.trim();
+        sel.appendChild(opt);
+      });
+    }
+
+    function guardConsultation(){
+      if (!state.patientId) throw new Error('Load a patient first');
+      if (!state.consultationId) throw new Error('Create or select a consultation first');
+    }
+
+    function renderTable(tbodyId, rows, cols, renderRow){
+      const tb = $(tbodyId);
+      tb.innerHTML = '';
+      if (!rows.length){
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td colspan="${cols}" class="hint">No entries yet</td>`;
+        tb.appendChild(tr);
+        return;
+      }
+      rows.forEach((r, i)=> tb.appendChild(renderRow(r, i)));
+    }
+
+    async function refreshLists(){
+      if (!state.consultationId) return;
+      const cid = state.consultationId;
+      const inv = await api('investigation_list', {consultation_id: cid});
+      renderTable('invTable', inv, 5, (r,i)=>{
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${i+1}</td><td>${escapeHtml(r.exam_name||'')}</td><td>${escapeHtml(r.results||'')}</td><td class="mono">${escapeHtml(r.performed_date||'')}</td>
+          <td><button class="btn danger" data-id="${r.id}">Delete</button></td>`;
+        tr.querySelector('button').onclick = async ()=>{
+          await api('investigation_delete', {id:r.id});
+          toast('Deleted','success');
+          refreshLists();
+        };
+        return tr;
+      });
+
+      const dx = await api('diagnosis_list', {consultation_id: cid});
+      renderTable('dxTable', dx, 6, (r,i)=>{
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${i+1}</td><td>${escapeHtml(r.diagnosis_name||'')}</td><td class="mono">${escapeHtml(r.diagnosis_code||'')}</td><td class="mono">${escapeHtml(r.diagnosis_date||'')}</td>
+          <td>${escapeHtml(r.clinical_notes||'')}</td><td><button class="btn danger">Delete</button></td>`;
+        tr.querySelector('button').onclick = async ()=>{
+          await api('diagnosis_delete', {id:r.id});
+          toast('Deleted','success');
+          refreshLists();
+        };
+        return tr;
+      });
+
+      const tx = await api('treatment_list', {consultation_id: cid});
+      renderTable('txTable', tx, 7, (r,i)=>{
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${i+1}</td><td>${escapeHtml(r.medication_name||'')}</td><td>${escapeHtml(r.dosage||'')}</td><td>${escapeHtml(r.route||'')}</td>
+          <td>${escapeHtml(r.frequency||'')}</td><td>${escapeHtml(r.duration||'')}</td><td><button class="btn danger">Delete</button></td>`;
+        tr.querySelector('button').onclick = async ()=>{
+          await api('treatment_delete', {id:r.id});
+          toast('Deleted','success');
+          refreshLists();
+        };
+        return tr;
+      });
+
+      const co = await api('consumable_list', {consultation_id: cid});
+      renderTable('coTable', co, 5, (r,i)=>{
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${i+1}</td><td>${escapeHtml(r.consumable_name||'')}</td><td class="mono">${escapeHtml(String(r.quantity ?? ''))}</td><td class="mono">${escapeHtml(r.date_issued||'')}</td>
+          <td><button class="btn danger">Delete</button></td>`;
+        tr.querySelector('button').onclick = async ()=>{
+          await api('consumable_delete', {id:r.id});
+          toast('Deleted','success');
+          refreshLists();
+        };
+        return tr;
+      });
+
+      const fu = await api('followup_list', {consultation_id: cid});
+      renderTable('fuTable', fu, 8, (r,i)=>{
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${i+1}</td><td class="mono">${escapeHtml(r.followup_date||'')}</td>
+          <td>${r.programmed_visit == 1 ? '<span class="pill ok">Yes</span>' : '<span class="pill">No</span>'}</td>
+          <td>${escapeHtml(r.conclusion_examination||'')}</td><td class="mono">${escapeHtml(r.next_appointment_date||'')}</td>
+          <td>${escapeHtml(r.complaint_diagnosis||'')}</td><td>${escapeHtml(r.treatment_comments||'')}</td>
+          <td><button class="btn danger">Delete</button></td>`;
+        tr.querySelector('button').onclick = async ()=>{
+          await api('followup_delete', {id:r.id});
+          toast('Deleted','success');
+          refreshLists();
+        };
+        return tr;
+      });
+
+      const discharge = await api('discharge_get', {consultation_id: cid});
+      $('discharging_status').value = discharge.discharging_status ?? '';
+      $('discharge_date').value = discharge.discharge_date ?? '';
+      $('discharging_service').value = discharge.discharging_service ?? '';
+      $('clinical_summary').value = discharge.clinical_summary ?? '';
+    }
+
+    async function load(){
+      const pid = parseInt($('patientId').value, 10);
+      if (!pid) return toast('Enter a valid patient ID','error');
+      state.patientId = pid;
+      state.consultationId = null;
+      setConsultBadge();
+
+      const p = await api('patient_get', {patient_id: pid});
+      state.patient = p;
+      renderPatient(p);
+
+      const cons = await api('consultation_get', {patient_id: pid});
+      state.consultations = cons;
+      renderSelectConsultations(cons);
+      fillConsultationForm(null);
+      toast('Loaded','success');
+    }
+
+    async function selectConsultation(id){
+      state.consultationId = id ? parseInt(id,10) : null;
+      setConsultBadge();
+      if (!state.consultationId) { fillConsultationForm(null); return; }
+      const r = await api('consultation_getById', {consultation_id: state.consultationId});
+      fillConsultationForm(r.consultation);
+      await refreshLists();
+    }
+
+    async function newConsultation(){
+      const pid = parseInt($('patientId').value, 10);
+      if (!pid) return toast('Enter a patient ID first','error');
+      state.patientId = pid;
+      fillConsultationForm(null);
+      state.consultationId = null;
+      $('consultationSelect').value = '';
+      setConsultBadge();
+      toast('Fill consultation then Save','success');
+      showTab('consultation');
+    }
+
+    async function saveConsultation(){
+      if (!state.patientId) return toast('Load a patient first','error');
+      const payload = collectConsultationPayload();
+      try {
+        if (!state.consultationId){
+          const r = await api('consultation_create', payload);
+          state.consultationId = r.consultation_id;
+          setConsultBadge();
+          toast('Consultation created','success');
+        } else {
+          await api('consultation_update', {consultation_id: state.consultationId, ...payload});
+          toast('Consultation updated','success');
+        }
+        const cons = await api('consultation_get', {patient_id: state.patientId});
+        state.consultations = cons;
+        renderSelectConsultations(cons);
+        $('consultationSelect').value = String(state.consultationId);
+        await refreshLists();
+      } catch (e){
+        toast(e.message || 'Save failed','error');
+      }
+    }
+
+    async function addInvestigation(){
+      try{
+        guardConsultation();
+        const payload = {
+          consultation_id: state.consultationId,
+          patient_id: state.patientId,
+          exam_name: $('inv_exam_name').value,
+          results: $('inv_results').value || null,
+          performed_date: $('inv_performed_date').value || null,
+        };
+        await api('investigation_create', payload);
+        $('inv_exam_name').value=''; $('inv_results').value=''; $('inv_performed_date').value='';
+        toast('Added','success');
+        await refreshLists();
+      }catch(e){ toast(e.message,'error'); }
+    }
+
+    async function addDiagnosis(){
+      try{
+        guardConsultation();
+        const payload = {
+          consultation_id: state.consultationId,
+          patient_id: state.patientId,
+          diagnosis_name: $('dx_name').value,
+          diagnosis_code: $('dx_code').value || null,
+          diagnosis_date: $('dx_date').value || null,
+          clinical_notes: $('dx_notes').value || null,
+        };
+        await api('diagnosis_create', payload);
+        $('dx_name').value=''; $('dx_code').value=''; $('dx_date').value=''; $('dx_notes').value='';
+        toast('Added','success');
+        await refreshLists();
+      }catch(e){ toast(e.message,'error'); }
+    }
+
+    async function addTreatment(){
+      try{
+        guardConsultation();
+        const payload = {
+          consultation_id: state.consultationId,
+          patient_id: state.patientId,
+          medication_name: $('tx_med').value,
+          dosage: $('tx_dosage').value || null,
+          route: $('tx_route').value || null,
+          frequency: $('tx_frequency').value || null,
+          duration: $('tx_duration').value || null,
+        };
+        await api('treatment_create', payload);
+        $('tx_med').value=''; $('tx_dosage').value=''; $('tx_route').value=''; $('tx_frequency').value=''; $('tx_duration').value='';
+        toast('Added','success');
+        await refreshLists();
+      }catch(e){ toast(e.message,'error'); }
+    }
+
+    async function addConsumable(){
+      try{
+        guardConsultation();
+        const payload = {
+          consultation_id: state.consultationId,
+          patient_id: state.patientId,
+          consumable_name: $('co_name').value,
+          quantity: $('co_qty').value || 1,
+          date_issued: $('co_date').value || null,
+        };
+        await api('consumable_create', payload);
+        $('co_name').value=''; $('co_qty').value=1; $('co_date').value='';
+        toast('Added','success');
+        await refreshLists();
+      }catch(e){ toast(e.message,'error'); }
+    }
+
+    async function saveDischarge(){
+      try{
+        guardConsultation();
+        const payload = {
+          consultation_id: state.consultationId,
+          discharging_status: $('discharging_status').value || null,
+          discharge_date: $('discharge_date').value || null,
+          discharging_service: $('discharging_service').value || null,
+          clinical_summary: $('clinical_summary').value || null,
+        };
+        await api('discharge_save', payload);
+        toast('Discharge saved','success');
+      }catch(e){ toast(e.message,'error'); }
+    }
+
+    async function addFollowup(){
+      try{
+        guardConsultation();
+        const payload = {
+          consultation_id: state.consultationId,
+          patient_id: state.patientId,
+          followup_date: $('fu_date').value || null,
+          programmed_visit: parseInt($('fu_programmed').value,10),
+          conclusion_examination: $('fu_conclusion').value || null,
+          next_appointment_date: $('fu_next').value || null,
+          complaint_diagnosis: $('fu_complaint').value || null,
+          treatment_comments: $('fu_treatment').value || null,
+        };
+        await api('followup_create', payload);
+        $('fu_date').value=''; $('fu_programmed').value='0'; $('fu_next').value=''; $('fu_complaint').value=''; $('fu_conclusion').value=''; $('fu_treatment').value='';
+        toast('Added','success');
+        await refreshLists();
+      }catch(e){ toast(e.message,'error'); }
+    }
+
+    // Init
+    wireTabs();
+    setConsultBadge();
+
+    $('btnLoad').onclick = ()=> load().catch(e=>toast(e.message,'error'));
+    $('btnNew').onclick = ()=> newConsultation();
+    $('consultationSelect').onchange = (e)=> selectConsultation(e.target.value).catch(err=>toast(err.message,'error'));
+
+    ['height_cm','weight_kg','systolic_bp','diastolic_bp'].forEach(id=>{
+      $(id).addEventListener('input', calcBmiBp);
+    });
+
+    $('btnSaveConsultation').onclick = ()=> saveConsultation();
+    $('btnAddInvestigation').onclick = ()=> addInvestigation();
+    $('btnAddDiagnosis').onclick = ()=> addDiagnosis();
+    $('btnAddTreatment').onclick = ()=> addTreatment();
+    $('btnAddConsumable').onclick = ()=> addConsumable();
+    $('btnSaveDischarge').onclick = ()=> saveDischarge();
+    $('btnAddFollowup').onclick = ()=> addFollowup();
+
+    // Convenience: load patient_id from query string (?patient_id=123)
+    const url = new URL(window.location.href);
+    const qpid = url.searchParams.get('patient_id');
+    if (qpid){
+      $('patientId').value = qpid;
+      load().catch(e=>toast(e.message,'error'));
+    }
+  </script>
+</body>
+</html>
+
