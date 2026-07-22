@@ -3,17 +3,18 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Dental Care</title>
+  <title>Dental Care – Clinical Documentation</title>
+  <meta name="description" content="Structured dental clinical documentation: patient details, consultation, investigation, diagnosis, treatment, consumables, discharge and follow-up." />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
     *,*::before,*::after{box-sizing:border-box}
     :root{
       --bg:#ffffff;
       --surface:#f5f6f8;
       --surface2:#e9ecef;
-      --border:rgba(0,0,0,.15);
+      --border:rgba(0,0,0,.13);
       --text:#000000;
       --muted:#495057;
       --muted2:#5a6268;
@@ -22,10 +23,24 @@
       --ok:#0f9d58;
       --warn:#f57c00;
       --bad:#d32f2f;
-      --shadow:0 12px 38px rgba(0,0,0,.15);
+      --shadow:0 12px 38px rgba(0,0,0,.13);
+      --shadow-sm:0 2px 8px rgba(0,0,0,.08);
       --radius:14px;
-      --mono:"DM Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      --sans:"DM Sans", system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif;
+      --radius-sm:10px;
+      --mono:"DM Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      --sans:"DM Sans", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+
+      /* Section accent colours */
+      --sec-blue:rgba(26,92,219,.10);
+      --sec-blue-border:rgba(26,92,219,.22);
+      --sec-green:rgba(15,157,88,.09);
+      --sec-green-border:rgba(15,157,88,.22);
+      --sec-amber:rgba(245,124,0,.09);
+      --sec-amber-border:rgba(245,124,0,.22);
+      --sec-purple:rgba(142,68,173,.09);
+      --sec-purple-border:rgba(142,68,173,.22);
+      --sec-teal:rgba(32,201,151,.09);
+      --sec-teal-border:rgba(32,201,151,.22);
     }
     html,body{height:100%}
     body{
@@ -39,122 +54,199 @@
       color:var(--text);
     }
     a{color:inherit}
-    .wrap{max-width:1200px;margin:0 auto;padding:22px 16px 36px}
+
+    /* ── Layout ─────────────────────────────────────────────────────────── */
+    .wrap{max-width:1260px;margin:0 auto;padding:22px 16px 48px}
+    .grid{display:grid;gap:14px;margin-top:16px}
+
+    /* ── Topbar ──────────────────────────────────────────────────────────── */
     .topbar{
       display:flex;align-items:center;gap:12px;flex-wrap:wrap;
-      background:linear-gradient(180deg, rgba(0,0,0,.02), rgba(0,0,0,.01));
+      background:linear-gradient(180deg, rgba(255,255,255,.80), rgba(245,246,248,.70));
+      backdrop-filter:blur(12px);
       border:1px solid var(--border);
       border-radius:var(--radius);
-      padding:14px 14px;
+      padding:14px 16px;
       box-shadow:var(--shadow);
     }
     .brand{display:flex;align-items:center;gap:10px}
     .logo{
-      width:42px;height:42px;border-radius:12px;
-      background:linear-gradient(135deg, rgba(43,111,255,.12), rgba(32,201,151,.10));
+      width:44px;height:44px;border-radius:12px;
+      background:linear-gradient(135deg, rgba(43,111,255,.15), rgba(32,201,151,.12));
       border:1px solid var(--border);
       display:flex;align-items:center;justify-content:center;
-      font-size:20px;
+      font-size:22px;
     }
-    .brand h1{margin:0;font-size:16px;font-weight:600;letter-spacing:.2px;color:#000000}
-    .brand p{margin:2px 0 0;color:#495057;font-size:12px}
-    .controls{margin-left:auto;display:flex;gap:10px;align-items:end;flex-wrap:wrap}
-    .field{display:flex;flex-direction:column;gap:6px}
-    .field label{font-size:12px;color:#495057;letter-spacing:.08em;text-transform:uppercase;font-weight:600}
-    .input, .select, .textarea{
-      font-family:var(--sans);
+    .brand h1{margin:0;font-size:16px;font-weight:600;letter-spacing:.2px;color:#000}
+    .brand p{margin:2px 0 0;color:var(--muted);font-size:12px}
+
+    .controls{margin-left:auto;display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap}
+
+    /* ── Base form elements ──────────────────────────────────────────────── */
+    .field{display:flex;flex-direction:column;gap:5px}
+    .field label{font-size:11.5px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;font-weight:600}
+    .input,.select,.textarea{
+      font-family:var(--sans);font-size:14px;
       color:var(--text);
-      background:rgba(0,0,0,.02);
+      background:rgba(0,0,0,.025);
       border:1px solid var(--border);
-      border-radius:12px;
-      padding:10px 12px;
+      border-radius:var(--radius-sm);
+      padding:9px 12px;
       outline:none;
-      min-width:170px;
+      min-width:150px;
+      transition:border-color .15s,box-shadow .15s;
     }
-    .textarea{min-height:88px;resize:vertical}
-    .input::placeholder, .textarea::placeholder {
-      color: #868e96;
-      opacity: 1;
+    .textarea{min-height:86px;resize:vertical;line-height:1.55}
+    .input::placeholder,.textarea::placeholder{color:#9ca3af;opacity:1}
+    .input:focus,.select:focus,.textarea:focus{
+      border-color:rgba(26,92,219,.50);
+      box-shadow:0 0 0 3px rgba(26,92,219,.14);
     }
-    .input:focus,.select:focus,.textarea:focus{border-color:rgba(26,92,219,.50);box-shadow:0 0 0 3px rgba(26,92,219,.18)}
+    .input[readonly]{background:rgba(0,0,0,.04);color:var(--muted);cursor:default}
+
+    /* ── Buttons ─────────────────────────────────────────────────────────── */
     .btn{
       border:1px solid var(--border);
       background:rgba(0,0,0,.05);
-      color:#000000;
-      padding:10px 12px;
-      border-radius:12px;
+      color:#000;
+      padding:9px 14px;
+      border-radius:var(--radius-sm);
       cursor:pointer;
-      font-weight:700;
-      transition:transform .12s ease, background .12s ease, border-color .12s ease;
+      font-weight:600;
+      font-size:13px;
+      font-family:var(--sans);
+      transition:transform .12s,background .12s,border-color .12s,box-shadow .12s;
     }
-    .btn:hover{background:rgba(0,0,0,.08)}
+    .btn:hover{background:rgba(0,0,0,.09);box-shadow:var(--shadow-sm)}
     .btn:active{transform:translateY(1px)}
-    .btn.primary{background:linear-gradient(180deg, rgba(26,92,219,.20), rgba(13,71,161,.15));border-color:rgba(26,92,219,.45);color:#000000}
-    .btn.ok{background:linear-gradient(180deg, rgba(15,157,88,.20), rgba(15,157,88,.12));border-color:rgba(15,157,88,.45);color:#000000}
-    .btn.danger{background:linear-gradient(180deg, rgba(211,47,47,.20), rgba(211,47,47,.12));border-color:rgba(211,47,47,.45);color:#000000}
-    .grid{display:grid;gap:14px;margin-top:16px}
+    .btn.primary{background:linear-gradient(180deg,rgba(26,92,219,.18),rgba(13,71,161,.12));border-color:rgba(26,92,219,.40)}
+    .btn.ok{background:linear-gradient(180deg,rgba(15,157,88,.18),rgba(15,157,88,.10));border-color:rgba(15,157,88,.40)}
+    .btn.danger{background:linear-gradient(180deg,rgba(211,47,47,.18),rgba(211,47,47,.10));border-color:rgba(211,47,47,.40);font-size:12px;padding:6px 10px}
+    .btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+
+    /* ── Cards ───────────────────────────────────────────────────────────── */
     .card{
-      background:linear-gradient(180deg, rgba(0,0,0,.02), rgba(0,0,0,.01));
+      background:linear-gradient(180deg,rgba(255,255,255,.70),rgba(248,249,250,.50));
       border:1px solid var(--border);
       border-radius:var(--radius);
       box-shadow:var(--shadow);
-      padding:16px;
+      padding:18px;
     }
-    .card h2{margin:0 0 10px;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:#495057;font-weight:700}
-    .patientGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}
-    .kv{padding:10px 12px;border:1px solid var(--border);border-radius:12px;background:rgba(0,0,0,.03)}
-    .kv .k{font-size:12px;color:#495057;letter-spacing:.08em;text-transform:uppercase;font-weight:600}
-    .kv .v{margin-top:4px;font-weight:600;color:#000000}
-    .tabs{display:flex;gap:6px;flex-wrap:wrap;margin-top:14px}
-    .tab{padding:9px 12px;border-radius:999px;border:1px solid var(--border);background:rgba(0,0,0,.04);cursor:pointer;font-weight:600;font-size:13px;color:#495057}
-    .tab.active{background:rgba(26,92,219,.12);border-color:rgba(26,92,219,.40);color:#000000}
-    .panel{display:none}
+    .card-title{
+      margin:0 0 14px;
+      font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+      color:var(--muted);font-weight:700;
+      display:flex;align-items:center;gap:8px;
+    }
+    .card-title .badge{
+      display:inline-flex;align-items:center;justify-content:center;
+      width:22px;height:22px;border-radius:50%;
+      background:rgba(26,92,219,.12);border:1px solid rgba(26,92,219,.22);
+      font-size:11px;color:var(--primary);font-weight:700;letter-spacing:0;
+    }
+
+    /* ── Patient grid ────────────────────────────────────────────────────── */
+    .patientGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:9px}
+    .kv{padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);background:rgba(0,0,0,.025)}
+    .kv .k{font-size:11px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;font-weight:600}
+    .kv .v{margin-top:4px;font-weight:600;color:#000;font-size:14px}
+
+    /* ── Tabs ────────────────────────────────────────────────────────────── */
+    .tabs{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--border)}
+    .tab{
+      padding:8px 13px;border-radius:999px;
+      border:1px solid var(--border);
+      background:rgba(0,0,0,.035);
+      cursor:pointer;font-weight:600;font-size:12.5px;color:var(--muted);
+      transition:background .15s,border-color .15s,color .15s;
+    }
+    .tab:hover:not(.active){background:rgba(0,0,0,.06)}
+    .tab.active{background:rgba(26,92,219,.12);border-color:rgba(26,92,219,.38);color:#000}
+    .tab.disabled-tab{opacity:.40;cursor:not-allowed;pointer-events:none}
+
+    /* ── Panels ──────────────────────────────────────────────────────────── */
+    .panel{display:none;animation:fadeIn .18s ease}
     .panel.active{display:block}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+
+    /* ── Form grid ───────────────────────────────────────────────────────── */
     .formGrid{display:grid;grid-template-columns:repeat(12,1fr);gap:10px}
     .col-12{grid-column:span 12}
     .col-6{grid-column:span 6}
     .col-4{grid-column:span 4}
     .col-3{grid-column:span 3}
-    .rowActions{display:flex;gap:10px;justify-content:flex-end;align-items:center;margin-top:10px;flex-wrap:wrap}
-    .hint{color:#5a6268;font-size:13px}
-    table{width:100%;border-collapse:collapse;border:1px solid var(--border);border-radius:12px;overflow:hidden}
-    th,td{padding:10px 10px;border-bottom:1px solid rgba(0,0,0,.08);text-align:left;font-size:13px;vertical-align:top}
-    th{background:rgba(0,0,0,.05);color:#495057;font-size:12px;letter-spacing:.08em;text-transform:uppercase;font-weight:700}
-    td{color:#000000}
-    tr:last-child td{border-bottom:none}
-    .mono{font-family:var(--mono)}
-    .pill{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;border:1px solid var(--border);background:rgba(0,0,0,.04);font-size:12px;color:#495057;font-weight:600}
-    .pill.ok{border-color:rgba(15,157,88,.40);color:#0f9d58}
-    .pill.warn{border-color:rgba(245,124,0,.40);color:#f57c00}
-    .pill.bad{border-color:rgba(211,47,47,.40);color:#d32f2f}
-    .toast{
-      position:fixed;right:16px;bottom:16px;display:flex;flex-direction:column;gap:8px;z-index:9999
+    .col-2{grid-column:span 2}
+
+    /* ── Sub-section headers ─────────────────────────────────────────────── */
+    .subsec{
+      grid-column:span 12;
+      display:flex;align-items:center;gap:10px;
+      margin:10px 0 4px;
     }
+    .subsec-line{flex:1;height:1px;background:var(--border)}
+    .subsec-label{
+      white-space:nowrap;
+      font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+      padding:4px 10px;
+      border-radius:999px;
+      border-width:1px;border-style:solid;
+    }
+    .subsec.blue .subsec-label{background:var(--sec-blue);border-color:var(--sec-blue-border);color:#1a5cdb}
+    .subsec.green .subsec-label{background:var(--sec-green);border-color:var(--sec-green-border);color:#0b8a45}
+    .subsec.amber .subsec-label{background:var(--sec-amber);border-color:var(--sec-amber-border);color:#b35900}
+    .subsec.purple .subsec-label{background:var(--sec-purple);border-color:var(--sec-purple-border);color:#6c3483}
+    .subsec.teal .subsec-label{background:var(--sec-teal);border-color:var(--sec-teal-border);color:#0d6e52}
+
+    /* ── Row actions ─────────────────────────────────────────────────────── */
+    .rowActions{display:flex;gap:10px;justify-content:flex-end;align-items:center;margin-top:12px;flex-wrap:wrap}
+    .hint{color:var(--muted2);font-size:12.5px}
+
+    /* ── Tables ──────────────────────────────────────────────────────────── */
+    .table-wrap{margin-top:12px;border-radius:var(--radius-sm);overflow:hidden;border:1px solid var(--border)}
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:9px 10px;border-bottom:1px solid rgba(0,0,0,.07);text-align:left;font-size:13px;vertical-align:top}
+    th{background:rgba(0,0,0,.04);color:var(--muted);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;font-weight:700}
+    td{color:#000}
+    tr:last-child td{border-bottom:none}
+    tr:hover td{background:rgba(0,0,0,.015)}
+
+    /* ── Pills & badges ──────────────────────────────────────────────────── */
+    .mono{font-family:var(--mono);font-size:12.5px}
+    .pill{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:999px;border:1px solid var(--border);background:rgba(0,0,0,.04);font-size:11.5px;color:var(--muted);font-weight:600}
+    .pill.ok{border-color:rgba(15,157,88,.40);color:#0f9d58;background:rgba(15,157,88,.07)}
+    .pill.warn{border-color:rgba(245,124,0,.40);color:#f57c00;background:rgba(245,124,0,.07)}
+    .pill.bad{border-color:rgba(211,47,47,.40);color:#d32f2f;background:rgba(211,47,47,.07)}
+
+    /* ── Toast ───────────────────────────────────────────────────────────── */
+    .toast{position:fixed;right:16px;bottom:16px;display:flex;flex-direction:column;gap:8px;z-index:9999}
     .toastItem{
-      max-width:380px;
+      max-width:360px;
       border:1px solid var(--border);
       background:rgba(248,249,250,.95);
-      backdrop-filter: blur(10px);
-      border-radius:14px;
-      padding:10px 12px;
-      box-shadow:var(--shadow);
-      color:var(--text);
-      transform:translateX(120%);
-      transition:transform .22s ease;
-      font-size:13px;
+      backdrop-filter:blur(12px);
+      border-radius:12px;padding:10px 14px;
+      box-shadow:var(--shadow);color:var(--text);
+      transform:translateX(130%);transition:transform .22s ease;font-size:13px;
     }
     .toastItem.show{transform:translateX(0)}
-    .toastItem.success{border-color:rgba(41,212,154,.35)}
-    .toastItem.error{border-color:rgba(255,92,122,.35)}
-    @media (max-width:860px){
+    .toastItem.success{border-color:rgba(15,157,88,.40);background:rgba(240,255,247,.97)}
+    .toastItem.error{border-color:rgba(211,47,47,.40);background:rgba(255,245,245,.97)}
+
+    /* ── Responsive ──────────────────────────────────────────────────────── */
+    @media(max-width:860px){
       .controls{margin-left:0;width:100%}
-      .input, .select{min-width:140px}
-      .col-6,.col-4,.col-3{grid-column:span 12}
+      .input,.select{min-width:120px}
+      .col-6,.col-4,.col-3,.col-2{grid-column:span 12}
+    }
+    @media(max-width:560px){
+      .patientGrid{grid-template-columns:1fr 1fr}
     }
   </style>
 </head>
 <body>
   <div class="wrap">
+
+    <!-- ── Top bar ─────────────────────────────────────────────────────── -->
     <div class="topbar">
       <div class="brand">
         <div class="logo">🦷</div>
@@ -181,30 +273,46 @@
     </div>
 
     <div class="grid">
+
+      <!-- ── 1. Patient Details ──────────────────────────────────────── -->
       <div class="card">
-        <h2>1. Patient Details</h2>
+        <h2 class="card-title"><span class="badge">1</span> Patient Details</h2>
         <div class="patientGrid" id="patientGrid"></div>
-        <div class="hint" style="margin-top:10px">
-          Most patient details are read-only and pulled from existing records when available.
-        </div>
+        <p class="hint" style="margin:10px 0 0">Patient details are read-only and pulled automatically from existing registration records.</p>
       </div>
 
+      <!-- ── Main tabbed card ───────────────────────────────────────── -->
       <div class="card">
         <div class="tabs" id="tabs"></div>
 
+        <!-- ── Panel: Consultation ──────────────────────────────────── -->
         <div class="panel active" id="panel-consultation">
-          <h2>2. Consultation</h2>
           <div class="formGrid">
+
+            <!-- 2.1 Present Illness -->
+            <div class="subsec blue col-12">
+              <div class="subsec-line"></div>
+              <div class="subsec-label">2.1 · Present Illness</div>
+              <div class="subsec-line"></div>
+            </div>
+
             <div class="col-6 field">
               <label>Chief complaints</label>
               <textarea class="textarea" id="chief_complaints" placeholder="Main patient complaints…"></textarea>
             </div>
             <div class="col-6 field">
               <label>History of present illness</label>
-              <textarea class="textarea" id="history_present_illness" placeholder="Detailed history…"></textarea>
+              <textarea class="textarea" id="history_present_illness" placeholder="Detailed history of current condition…"></textarea>
             </div>
 
-            <div class="col-4 field">
+            <!-- 2.2 Past Medical History -->
+            <div class="subsec green col-12">
+              <div class="subsec-line"></div>
+              <div class="subsec-label">2.2 · Past Medical History</div>
+              <div class="subsec-line"></div>
+            </div>
+
+            <div class="col-3 field">
               <label>Immunization status (VAT)</label>
               <select class="select" id="immune_status">
                 <option value="">—</option>
@@ -214,19 +322,19 @@
                 <option>Unknown</option>
               </select>
             </div>
-            <div class="col-4 field">
+            <div class="col-3 field">
               <label>Gyneco-obstetrical history</label>
               <input class="input" id="gyneco_obstetrical_history" placeholder="If applicable" />
             </div>
-            <div class="col-4 field">
-              <label>Psychosocial status</label>
-              <input class="input" id="psychosocial_status" placeholder="Stress, support…" />
-            </div>
-
-            <div class="col-6 field">
+            <div class="col-3 field">
               <label>Lifestyle</label>
               <input class="input" id="lifestyle" placeholder="Alcohol, tobacco, diet…" />
             </div>
+            <div class="col-3 field">
+              <label>Psychosocial status</label>
+              <input class="input" id="psychosocial_status" placeholder="Stress, support network…" />
+            </div>
+
             <div class="col-3 field">
               <label>Allergies</label>
               <select class="select" id="allergies">
@@ -234,76 +342,95 @@
                 <option value="1">Yes</option>
               </select>
             </div>
-            <div class="col-3 field">
-              <label>Allergies details</label>
-              <input class="input" id="allergies_details" placeholder="If yes…" />
+            <div class="col-9 field">
+              <label>Allergies details (if yes)</label>
+              <input class="input" id="allergies_details" placeholder="Describe allergy and known reactions…" />
+            </div>
+
+            <!-- 2.3 Family History -->
+            <div class="subsec amber col-12">
+              <div class="subsec-line"></div>
+              <div class="subsec-label">2.3 · Family History</div>
+              <div class="subsec-line"></div>
             </div>
 
             <div class="col-6 field">
-              <label>Family health status</label>
-              <input class="input" id="family_health_status" placeholder="Known family conditions…" />
+              <label>Current family health status</label>
+              <input class="input" id="family_health_status" placeholder="Known hereditary or chronic conditions…" />
             </div>
             <div class="col-6 field">
               <label>Family medications history</label>
-              <input class="input" id="family_med_history" placeholder="Relevant meds history…" />
+              <input class="input" id="family_med_history" placeholder="Relevant medications in family…" />
             </div>
 
-            <div class="col-12" style="height:10px"></div>
+            <!-- 2.4 Physical Examination – Vitals -->
+            <div class="subsec purple col-12">
+              <div class="subsec-line"></div>
+              <div class="subsec-label">2.4 · Physical Examination — Anthropometric & Vital Signs</div>
+              <div class="subsec-line"></div>
+            </div>
 
             <div class="col-3 field">
               <label>Height (cm)</label>
-              <input class="input mono" id="height_cm" type="number" step="0.1" />
+              <input class="input mono" id="height_cm" type="number" step="0.1" min="0" placeholder="—" />
             </div>
             <div class="col-3 field">
               <label>Weight (kg)</label>
-              <input class="input mono" id="weight_kg" type="number" step="0.1" />
+              <input class="input mono" id="weight_kg" type="number" step="0.1" min="0" placeholder="—" />
             </div>
             <div class="col-3 field">
-              <label>BMI</label>
-              <input class="input mono" id="bmi" readonly />
+              <label>BMI (kg/m²)</label>
+              <input class="input mono" id="bmi" readonly placeholder="Auto-calculated" />
             </div>
             <div class="col-3 field">
               <label>BMI status</label>
-              <input class="input" id="bmi_status" readonly />
+              <input class="input" id="bmi_status" readonly placeholder="Auto-calculated" />
             </div>
 
             <div class="col-3 field">
-              <label>Systolic BP</label>
-              <input class="input mono" id="systolic_bp" type="number" />
+              <label>Systolic BP (mmHg)</label>
+              <input class="input mono" id="systolic_bp" type="number" placeholder="—" />
             </div>
             <div class="col-3 field">
-              <label>Diastolic BP</label>
-              <input class="input mono" id="diastolic_bp" type="number" />
+              <label>Diastolic BP (mmHg)</label>
+              <input class="input mono" id="diastolic_bp" type="number" placeholder="—" />
             </div>
             <div class="col-3 field">
               <label>BP status</label>
-              <input class="input" id="bp_status" readonly />
+              <input class="input" id="bp_status" readonly placeholder="Auto-calculated" />
             </div>
             <div class="col-3 field">
               <label>Pulse (bpm)</label>
-              <input class="input mono" id="pulse_bpm" type="number" />
+              <input class="input mono" id="pulse_bpm" type="number" placeholder="—" />
             </div>
 
             <div class="col-3 field">
-              <label>Respiratory rate</label>
-              <input class="input mono" id="respiratory_rate" type="number" />
+              <label>Respiratory rate (br/min)</label>
+              <input class="input mono" id="respiratory_rate" type="number" placeholder="—" />
             </div>
             <div class="col-3 field">
               <label>Temperature (°C)</label>
-              <input class="input mono" id="temperature_c" type="number" step="0.1" />
+              <input class="input mono" id="temperature_c" type="number" step="0.1" placeholder="—" />
             </div>
             <div class="col-3 field">
               <label>O₂ saturation (SaO₂ %)</label>
-              <input class="input mono" id="oxygen_saturation" type="number" step="0.1" />
+              <input class="input mono" id="oxygen_saturation" type="number" step="0.1" min="0" max="100" placeholder="—" />
             </div>
             <div class="col-3 field">
-              <label>Pain score</label>
-              <input class="input mono" id="pain_score" type="number" min="0" max="10" />
+              <label>Pain score (0 – 10)</label>
+              <input class="input mono" id="pain_score" type="number" min="0" max="10" placeholder="—" />
+            </div>
+
+            <!-- 2.4 Clinical Assessments -->
+            <div class="subsec teal col-12">
+              <div class="subsec-line"></div>
+              <div class="subsec-label">2.4 · Clinical Assessments</div>
+              <div class="subsec-line"></div>
             </div>
 
             <div class="col-6 field">
-              <label>Presumptive diagnosis</label>
-              <textarea class="textarea" id="presumptive_diagnosis"></textarea>
+              <label>Presumptive diagnosis (Hypothèse diagnostique)</label>
+              <textarea class="textarea" id="presumptive_diagnosis" placeholder="Working / differential diagnosis…"></textarea>
             </div>
             <div class="col-2 field">
               <label>TB screening</label>
@@ -338,24 +465,30 @@
                 <option>Not applicable</option>
               </select>
             </div>
-          </div>
+
+          </div><!-- /formGrid -->
 
           <div class="rowActions">
             <span class="pill" id="consultBadge">Consultation: —</span>
             <button class="btn ok" id="btnSaveConsultation">Save consultation</button>
           </div>
-        </div>
+        </div><!-- /panel-consultation -->
 
+        <!-- ── Panel: Investigation ──────────────────────────────────── -->
         <div class="panel" id="panel-investigation">
-          <h2>3. Investigation</h2>
           <div class="formGrid">
+            <div class="subsec blue col-12">
+              <div class="subsec-line"></div>
+              <div class="subsec-label">3 · Investigation</div>
+              <div class="subsec-line"></div>
+            </div>
             <div class="col-6 field">
               <label>Examination / test name</label>
-              <input class="input" id="inv_exam_name" placeholder="e.g. X-ray…" />
+              <input class="input" id="inv_exam_name" placeholder="e.g. Panoramic X-ray, Blood glucose…" />
             </div>
             <div class="col-4 field">
               <label>Results</label>
-              <input class="input" id="inv_results" />
+              <input class="input" id="inv_results" placeholder="Finding or value" />
             </div>
             <div class="col-2 field">
               <label>Date performed</label>
@@ -363,93 +496,126 @@
             </div>
           </div>
           <div class="rowActions">
-            <button class="btn ok" id="btnAddInvestigation">Add</button>
+            <button class="btn ok" id="btnAddInvestigation">Add investigation</button>
           </div>
-          <div style="margin-top:10px">
+          <div class="table-wrap">
             <table>
-              <thead><tr><th>#</th><th>Test</th><th>Results</th><th>Date</th><th></th></tr></thead>
+              <thead><tr><th>#</th><th>Test / Examination</th><th>Results</th><th>Date</th><th></th></tr></thead>
               <tbody id="invTable"></tbody>
             </table>
           </div>
-        </div>
+        </div><!-- /panel-investigation -->
 
+        <!-- ── Panel: Diagnosis ──────────────────────────────────────── -->
         <div class="panel" id="panel-diagnosis">
-          <h2>4. Final Diagnosis</h2>
           <div class="formGrid">
+            <div class="subsec blue col-12">
+              <div class="subsec-line"></div>
+              <div class="subsec-label">4 · Final Diagnosis</div>
+              <div class="subsec-line"></div>
+            </div>
             <div class="col-6 field">
               <label>Diagnosis name</label>
-              <input class="input" id="dx_name" />
+              <input class="input" id="dx_name" placeholder="Confirmed diagnosis…" />
             </div>
             <div class="col-3 field">
-              <label>Code (optional)</label>
-              <input class="input mono" id="dx_code" />
+              <label>Diagnosis code (optional)</label>
+              <input class="input mono" id="dx_code" placeholder="ICD-10 code…" />
             </div>
             <div class="col-3 field">
-              <label>Date</label>
+              <label>Diagnosis date</label>
               <input class="input mono" id="dx_date" type="date" />
             </div>
             <div class="col-12 field">
               <label>Clinical notes (optional)</label>
-              <textarea class="textarea" id="dx_notes"></textarea>
+              <textarea class="textarea" id="dx_notes" placeholder="Supporting observations or context…"></textarea>
             </div>
           </div>
-          <div class="rowActions"><button class="btn ok" id="btnAddDiagnosis">Add</button></div>
-          <div style="margin-top:10px">
+          <div class="rowActions">
+            <button class="btn ok" id="btnAddDiagnosis">Add diagnosis</button>
+          </div>
+          <div class="table-wrap">
             <table>
-              <thead><tr><th>#</th><th>Name</th><th>Code</th><th>Date</th><th>Notes</th><th></th></tr></thead>
+              <thead><tr><th>#</th><th>Diagnosis</th><th>Code</th><th>Date</th><th>Notes</th><th></th></tr></thead>
               <tbody id="dxTable"></tbody>
             </table>
           </div>
-        </div>
+        </div><!-- /panel-diagnosis -->
 
+        <!-- ── Panel: Treatment ──────────────────────────────────────── -->
         <div class="panel" id="panel-treatment">
-          <h2>5. Treatment</h2>
           <div class="formGrid">
-            <div class="col-4 field"><label>Medication</label><input class="input" id="tx_med" /></div>
-            <div class="col-2 field"><label>Dosage</label><input class="input" id="tx_dosage" /></div>
-            <div class="col-2 field"><label>Route</label><input class="input" id="tx_route" /></div>
-            <div class="col-2 field"><label>Frequency</label><input class="input" id="tx_frequency" /></div>
-            <div class="col-2 field"><label>Duration</label><input class="input" id="tx_duration" /></div>
+            <div class="subsec blue col-12">
+              <div class="subsec-line"></div>
+              <div class="subsec-label">5 · Treatment</div>
+              <div class="subsec-line"></div>
+            </div>
+            <div class="col-4 field"><label>Medication name</label><input class="input" id="tx_med" placeholder="Drug / material name…" /></div>
+            <div class="col-2 field"><label>Dosage</label><input class="input" id="tx_dosage" placeholder="e.g. 500 mg" /></div>
+            <div class="col-2 field"><label>Route</label><input class="input" id="tx_route" placeholder="Oral / IV / topical…" /></div>
+            <div class="col-2 field"><label>Frequency</label><input class="input" id="tx_frequency" placeholder="e.g. TID" /></div>
+            <div class="col-2 field"><label>Duration</label><input class="input" id="tx_duration" placeholder="e.g. 7 days" /></div>
           </div>
-          <div class="rowActions"><button class="btn ok" id="btnAddTreatment">Add</button></div>
-          <div style="margin-top:10px">
+          <div class="rowActions">
+            <button class="btn ok" id="btnAddTreatment">Add treatment</button>
+          </div>
+          <div class="table-wrap">
             <table>
               <thead><tr><th>#</th><th>Medication</th><th>Dosage</th><th>Route</th><th>Frequency</th><th>Duration</th><th></th></tr></thead>
               <tbody id="txTable"></tbody>
             </table>
           </div>
-        </div>
+        </div><!-- /panel-treatment -->
 
+        <!-- ── Panel: Consumables ────────────────────────────────────── -->
         <div class="panel" id="panel-consumables">
-          <h2>6. Consumables</h2>
           <div class="formGrid">
-            <div class="col-6 field"><label>Consumable</label><input class="input" id="co_name" /></div>
+            <div class="subsec blue col-12">
+              <div class="subsec-line"></div>
+              <div class="subsec-label">6 · Consumables</div>
+              <div class="subsec-line"></div>
+            </div>
+            <div class="col-6 field"><label>Consumable name</label><input class="input" id="co_name" placeholder="e.g. Gloves, gauze, composite resin…" /></div>
             <div class="col-3 field"><label>Quantity</label><input class="input mono" id="co_qty" type="number" min="1" value="1" /></div>
             <div class="col-3 field"><label>Date issued</label><input class="input mono" id="co_date" type="date" /></div>
           </div>
-          <div class="rowActions"><button class="btn ok" id="btnAddConsumable">Add</button></div>
-          <div style="margin-top:10px">
+          <div class="rowActions">
+            <button class="btn ok" id="btnAddConsumable">Add consumable</button>
+          </div>
+          <div class="table-wrap">
             <table>
-              <thead><tr><th>#</th><th>Name</th><th>Qty</th><th>Date</th><th></th></tr></thead>
+              <thead><tr><th>#</th><th>Consumable</th><th>Qty</th><th>Date issued</th><th></th></tr></thead>
               <tbody id="coTable"></tbody>
             </table>
           </div>
-        </div>
+        </div><!-- /panel-consumables -->
 
+        <!-- ── Panel: Discharge ──────────────────────────────────────── -->
         <div class="panel" id="panel-discharge">
-          <h2>7. Discharge</h2>
           <div class="formGrid">
-            <div class="col-4 field"><label>Discharging status</label><input class="input" id="discharging_status" /></div>
+            <div class="subsec blue col-12">
+              <div class="subsec-line"></div>
+              <div class="subsec-label">7 · Discharge</div>
+              <div class="subsec-line"></div>
+            </div>
+            <div class="col-4 field"><label>Discharging status</label><input class="input" id="discharging_status" placeholder="e.g. Improved, Referred, DAMA…" /></div>
             <div class="col-4 field"><label>Discharge date</label><input class="input mono" id="discharge_date" type="date" /></div>
-            <div class="col-4 field"><label>Discharging service</label><input class="input" id="discharging_service" /></div>
-            <div class="col-12 field"><label>Clinical summary</label><textarea class="textarea" id="clinical_summary"></textarea></div>
+            <div class="col-4 field"><label>Discharging service</label><input class="input" id="discharging_service" placeholder="Service / unit discharging the patient…" /></div>
+            <div class="col-12 field"><label>Clinical summary</label><textarea class="textarea" id="clinical_summary" placeholder="Summary of the clinical encounter, findings, and outcome…"></textarea></div>
           </div>
-          <div class="rowActions"><button class="btn ok" id="btnSaveDischarge">Save discharge</button></div>
-        </div>
+          <div class="rowActions">
+            <button class="btn ok" id="btnSaveDischarge">Save discharge</button>
+          </div>
+        </div><!-- /panel-discharge -->
 
+        <!-- ── Panel: Follow-up ──────────────────────────────────────── -->
         <div class="panel" id="panel-followup">
-          <h2>8. General Follow-up</h2>
           <div class="formGrid">
+            <div class="subsec blue col-12">
+              <div class="subsec-line"></div>
+              <div class="subsec-label">8 · General Follow-up</div>
+              <div class="subsec-line"></div>
+            </div>
             <div class="col-3 field"><label>Follow-up date</label><input class="input mono" id="fu_date" type="date" /></div>
             <div class="col-3 field">
               <label>Programmed visit</label>
@@ -459,22 +625,29 @@
               </select>
             </div>
             <div class="col-3 field"><label>Next appointment (RDV)</label><input class="input mono" id="fu_next" type="date" /></div>
-            <div class="col-3 field"><label>Complaint diagnosis</label><input class="input" id="fu_complaint" /></div>
-            <div class="col-6 field"><label>Conclusion of examination</label><textarea class="textarea" id="fu_conclusion"></textarea></div>
-            <div class="col-6 field"><label>Treatment & comments / management</label><textarea class="textarea" id="fu_treatment"></textarea></div>
+            <div class="col-3 field"><label>Complaint diagnosis</label><input class="input" id="fu_complaint" placeholder="Complaint at this visit…" /></div>
+            <div class="col-6 field"><label>Conclusion of examination</label><textarea class="textarea" id="fu_conclusion" placeholder="Clinical findings and conclusions…"></textarea></div>
+            <div class="col-6 field"><label>Treatment &amp; comments / management</label><textarea class="textarea" id="fu_treatment" placeholder="Treatment provided or management plan…"></textarea></div>
           </div>
-          <div class="rowActions"><button class="btn ok" id="btnAddFollowup">Add follow-up</button></div>
-          <div style="margin-top:10px">
+          <div class="rowActions">
+            <button class="btn ok" id="btnAddFollowup">Add follow-up entry</button>
+          </div>
+          <div class="table-wrap">
             <table>
-              <thead><tr><th>#</th><th>Date</th><th>Programmed</th><th>Conclusion</th><th>Next RDV</th><th>Complaint/Dx</th><th>Management</th><th></th></tr></thead>
+              <thead>
+                <tr>
+                  <th>#</th><th>Date</th><th>Programmed</th><th>Conclusion</th>
+                  <th>Next RDV</th><th>Complaint / Dx</th><th>Management</th><th></th>
+                </tr>
+              </thead>
               <tbody id="fuTable"></tbody>
             </table>
           </div>
-        </div>
+        </div><!-- /panel-followup -->
 
-      </div>
-    </div>
-  </div>
+      </div><!-- /card -->
+    </div><!-- /grid -->
+  </div><!-- /wrap -->
 
   <div class="toast" id="toast"></div>
 
@@ -482,13 +655,13 @@
     const API = '../APIs/dental.php';
 
     const TABS = [
-      ['consultation','Consultation'],
-      ['investigation','Investigation'],
-      ['diagnosis','Final Diagnosis'],
-      ['treatment','Treatment'],
-      ['consumables','Consumables'],
-      ['discharge','Discharge'],
-      ['followup','Follow-up'],
+      ['consultation',  '2 · Consultation'],
+      ['investigation', '3 · Investigation'],
+      ['diagnosis',     '4 · Final Diagnosis'],
+      ['treatment',     '5 · Treatment'],
+      ['consumables',   '6 · Consumables'],
+      ['discharge',     '7 · Discharge'],
+      ['followup',      '8 · Follow-up'],
     ];
 
     const state = {
@@ -498,7 +671,13 @@
       consultations: [],
     };
 
-    function $(id){return document.getElementById(id)}
+    /* ── Utilities ─────────────────────────────────────────────────── */
+    function $(id){ return document.getElementById(id) }
+
+    function escapeHtml(s){
+      return String(s ?? '').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'","&#039;");
+    }
+
     function toast(msg, type='info'){
       const wrap = $('toast');
       const el = document.createElement('div');
@@ -506,7 +685,7 @@
       el.textContent = msg;
       wrap.appendChild(el);
       requestAnimationFrame(()=>{ el.classList.add('show'); });
-      setTimeout(()=>{ el.classList.remove('show'); setTimeout(()=>el.remove(), 250); }, 2800);
+      setTimeout(()=>{ el.classList.remove('show'); setTimeout(()=>el.remove(), 260); }, 3000);
     }
 
     async function api(action, payload = {}){
@@ -521,10 +700,47 @@
       return data.data;
     }
 
+    /* ── Consultation badge ─────────────────────────────────────────── */
     function setConsultBadge(){
-      $('consultBadge').textContent = state.consultationId ? `Consultation: #${state.consultationId}` : 'Consultation: —';
+      $('consultBadge').textContent = state.consultationId
+        ? `Consultation: #${state.consultationId}`
+        : 'Consultation: —';
     }
 
+    /* ── Tab management ─────────────────────────────────────────────── */
+    function wireTabs(){
+      const tabs = $('tabs');
+      tabs.innerHTML = '';
+      TABS.forEach(([id, label], i) => {
+        const b = document.createElement('button');
+        b.className = 'tab' + (i === 0 ? ' active' : '');
+        b.id = 'tab-' + id;
+        b.textContent = label;
+        b.onclick = () => showTab(id);
+        tabs.appendChild(b);
+      });
+      updateTabDisabledState();
+    }
+
+    function showTab(id){
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      const idx = TABS.findIndex(t => t[0] === id);
+      document.querySelectorAll('.tab')[idx]?.classList.add('active');
+      $('panel-' + id).classList.add('active');
+    }
+
+    /** Grey-out non-consultation tabs when no consultation is loaded */
+    function updateTabDisabledState(){
+      const locked = !state.consultationId;
+      TABS.forEach(([id]) => {
+        if (id === 'consultation') return;
+        const el = $('tab-' + id);
+        if (el) el.classList.toggle('disabled-tab', locked);
+      });
+    }
+
+    /* ── Patient render ─────────────────────────────────────────────── */
     function renderPatient(p){
       const grid = $('patientGrid');
       const fields = [
@@ -539,7 +755,7 @@
         ['Village', p?.village ?? '—'],
       ];
       grid.innerHTML = '';
-      fields.forEach(([k,v])=>{
+      fields.forEach(([k,v]) => {
         const el = document.createElement('div');
         el.className = 'kv';
         el.innerHTML = `<div class="k">${k}</div><div class="v">${escapeHtml(String(v ?? '—'))}</div>`;
@@ -547,40 +763,20 @@
       });
     }
 
-    function escapeHtml(s){
-      return s.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'","&#039;");
-    }
-
-    function wireTabs(){
-      const tabs = $('tabs');
-      tabs.innerHTML = '';
-      TABS.forEach(([id,label], i)=>{
-        const b = document.createElement('button');
-        b.className = 'tab' + (i===0 ? ' active' : '');
-        b.textContent = label;
-        b.onclick = ()=> showTab(id);
-        tabs.appendChild(b);
-      });
-    }
-
-    function showTab(id){
-      document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-      document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
-      const idx = TABS.findIndex(t=>t[0]===id);
-      document.querySelectorAll('.tab')[idx]?.classList.add('active');
-      $('panel-' + id).classList.add('active');
-    }
-
+    /* ── Auto-calculations: BMI & BP status ─────────────────────────── */
     function calcBmiBp(){
-      const h = parseFloat($('height_cm').value);
-      const w = parseFloat($('weight_kg').value);
+      const h   = parseFloat($('height_cm').value);
+      const w   = parseFloat($('weight_kg').value);
       const sys = parseInt($('systolic_bp').value, 10);
       const dia = parseInt($('diastolic_bp').value, 10);
 
       if (Number.isFinite(h) && Number.isFinite(w) && h > 0 && w > 0){
-        const bmi = +(w / ((h/100)**2)).toFixed(2);
+        const bmi = +(w / ((h / 100) ** 2)).toFixed(2);
         $('bmi').value = bmi;
-        $('bmi_status').value = bmi < 18.5 ? 'Underweight' : bmi < 25 ? 'Normal' : bmi < 30 ? 'Overweight' : 'Obese';
+        $('bmi_status').value =
+          bmi < 18.5 ? 'Underweight' :
+          bmi < 25   ? 'Normal'      :
+          bmi < 30   ? 'Overweight'  : 'Obese';
       } else {
         $('bmi').value = '';
         $('bmi_status').value = '';
@@ -588,24 +784,28 @@
 
       if (Number.isFinite(sys) && Number.isFinite(dia)){
         $('bp_status').value =
-          (sys < 120 && dia < 80) ? 'Normal' :
-          (sys < 130 && dia < 80) ? 'Elevated' :
-          (sys < 140 || dia < 90) ? 'High Stage 1' :
-          'High Stage 2';
+          (sys < 120 && dia < 80)  ? 'Normal'       :
+          (sys < 130 && dia < 80)  ? 'Elevated'     :
+          (sys < 140 || dia < 90)  ? 'High Stage 1' : 'High Stage 2';
       } else {
         $('bp_status').value = '';
       }
     }
 
+    /* ── Consultation form fill / collect ───────────────────────────── */
+    const CONSULT_KEYS = [
+      'chief_complaints','history_present_illness',
+      'immune_status','gyneco_obstetrical_history','lifestyle','psychosocial_status',
+      'allergies','allergies_details',
+      'family_health_status','family_med_history',
+      'height_cm','weight_kg','bmi','bmi_status',
+      'systolic_bp','diastolic_bp','bp_status',
+      'pulse_bpm','respiratory_rate','temperature_c','oxygen_saturation','pain_score',
+      'presumptive_diagnosis','tb_screening','hiv_status','sti_screening',
+    ];
+
     function fillConsultationForm(c){
-      const keys = [
-        'chief_complaints','history_present_illness','immune_status','gyneco_obstetrical_history',
-        'lifestyle','psychosocial_status','allergies','allergies_details','family_health_status','family_med_history',
-        'height_cm','weight_kg','bmi','bmi_status','systolic_bp','diastolic_bp','bp_status','pulse_bpm','respiratory_rate',
-        'temperature_c','oxygen_saturation','pain_score',
-        'presumptive_diagnosis','tb_screening','hiv_status','sti_screening',
-      ];
-      keys.forEach(k=>{
+      CONSULT_KEYS.forEach(k => {
         const el = $(k);
         if (!el) return;
         const v = (c && c[k] !== undefined && c[k] !== null) ? c[k] : '';
@@ -641,16 +841,16 @@
         hiv_status: $('hiv_status').value,
         sti_screening: $('sti_screening').value,
       };
-      Object.keys(payload).forEach(k=>{
-        if (payload[k] === '') payload[k] = null;
-      });
+      // Convert empty strings to null
+      Object.keys(payload).forEach(k => { if (payload[k] === '') payload[k] = null; });
       return payload;
     }
 
+    /* ── Consultation selector ──────────────────────────────────────── */
     function renderSelectConsultations(list){
       const sel = $('consultationSelect');
       sel.innerHTML = '<option value="">—</option>';
-      list.forEach(c=>{
+      list.forEach(c => {
         const opt = document.createElement('option');
         opt.value = c.id;
         opt.textContent = `#${c.id} — ${c.created_at ?? ''}`.trim();
@@ -658,107 +858,130 @@
       });
     }
 
+    /* ── Guard helper ───────────────────────────────────────────────── */
     function guardConsultation(){
-      if (!state.patientId) throw new Error('Load a patient first');
+      if (!state.patientId)      throw new Error('Load a patient first');
       if (!state.consultationId) throw new Error('Create or select a consultation first');
     }
 
+    /* ── Generic table renderer ─────────────────────────────────────── */
     function renderTable(tbodyId, rows, cols, renderRow){
       const tb = $(tbodyId);
       tb.innerHTML = '';
       if (!rows.length){
         const tr = document.createElement('tr');
-        tr.innerHTML = `<td colspan="${cols}" class="hint">No entries yet</td>`;
+        tr.innerHTML = `<td colspan="${cols}" class="hint" style="text-align:center;padding:16px">No entries yet</td>`;
         tb.appendChild(tr);
         return;
       }
-      rows.forEach((r, i)=> tb.appendChild(renderRow(r, i)));
+      rows.forEach((r, i) => tb.appendChild(renderRow(r, i)));
     }
 
+    /* ── Refresh all lists ──────────────────────────────────────────── */
     async function refreshLists(){
       if (!state.consultationId) return;
       const cid = state.consultationId;
+
+      // Investigations
       const inv = await api('investigation_list', {consultation_id: cid});
-      renderTable('invTable', inv, 5, (r,i)=>{
+      renderTable('invTable', inv, 5, (r, i) => {
         const tr = document.createElement('tr');
-        tr.innerHTML = `<td>${i+1}</td><td>${escapeHtml(r.exam_name||'')}</td><td>${escapeHtml(r.results||'')}</td><td class="mono">${escapeHtml(r.performed_date||'')}</td>
+        tr.innerHTML = `<td>${i+1}</td><td>${escapeHtml(r.exam_name||'')}</td><td>${escapeHtml(r.results||'')}</td>
+          <td class="mono">${escapeHtml(r.performed_date||'')}</td>
           <td><button class="btn danger" data-id="${r.id}">Delete</button></td>`;
-        tr.querySelector('button').onclick = async ()=>{
-          await api('investigation_delete', {id:r.id});
-          toast('Deleted','success');
+        tr.querySelector('button').onclick = async () => {
+          await api('investigation_delete', {id: r.id});
+          toast('Deleted', 'success');
           refreshLists();
         };
         return tr;
       });
 
+      // Diagnoses
       const dx = await api('diagnosis_list', {consultation_id: cid});
-      renderTable('dxTable', dx, 6, (r,i)=>{
+      renderTable('dxTable', dx, 6, (r, i) => {
         const tr = document.createElement('tr');
-        tr.innerHTML = `<td>${i+1}</td><td>${escapeHtml(r.diagnosis_name||'')}</td><td class="mono">${escapeHtml(r.diagnosis_code||'')}</td><td class="mono">${escapeHtml(r.diagnosis_date||'')}</td>
-          <td>${escapeHtml(r.clinical_notes||'')}</td><td><button class="btn danger">Delete</button></td>`;
-        tr.querySelector('button').onclick = async ()=>{
-          await api('diagnosis_delete', {id:r.id});
-          toast('Deleted','success');
+        tr.innerHTML = `<td>${i+1}</td><td>${escapeHtml(r.diagnosis_name||'')}</td>
+          <td class="mono">${escapeHtml(r.diagnosis_code||'')}</td>
+          <td class="mono">${escapeHtml(r.diagnosis_date||'')}</td>
+          <td>${escapeHtml(r.clinical_notes||'')}</td>
+          <td><button class="btn danger">Delete</button></td>`;
+        tr.querySelector('button').onclick = async () => {
+          await api('diagnosis_delete', {id: r.id});
+          toast('Deleted', 'success');
           refreshLists();
         };
         return tr;
       });
 
+      // Treatments
       const tx = await api('treatment_list', {consultation_id: cid});
-      renderTable('txTable', tx, 7, (r,i)=>{
+      renderTable('txTable', tx, 7, (r, i) => {
         const tr = document.createElement('tr');
-        tr.innerHTML = `<td>${i+1}</td><td>${escapeHtml(r.medication_name||'')}</td><td>${escapeHtml(r.dosage||'')}</td><td>${escapeHtml(r.route||'')}</td>
-          <td>${escapeHtml(r.frequency||'')}</td><td>${escapeHtml(r.duration||'')}</td><td><button class="btn danger">Delete</button></td>`;
-        tr.querySelector('button').onclick = async ()=>{
-          await api('treatment_delete', {id:r.id});
-          toast('Deleted','success');
+        tr.innerHTML = `<td>${i+1}</td><td>${escapeHtml(r.medication_name||'')}</td>
+          <td>${escapeHtml(r.dosage||'')}</td><td>${escapeHtml(r.route||'')}</td>
+          <td>${escapeHtml(r.frequency||'')}</td><td>${escapeHtml(r.duration||'')}</td>
+          <td><button class="btn danger">Delete</button></td>`;
+        tr.querySelector('button').onclick = async () => {
+          await api('treatment_delete', {id: r.id});
+          toast('Deleted', 'success');
           refreshLists();
         };
         return tr;
       });
 
+      // Consumables
       const co = await api('consumable_list', {consultation_id: cid});
-      renderTable('coTable', co, 5, (r,i)=>{
+      renderTable('coTable', co, 5, (r, i) => {
         const tr = document.createElement('tr');
-        tr.innerHTML = `<td>${i+1}</td><td>${escapeHtml(r.consumable_name||'')}</td><td class="mono">${escapeHtml(String(r.quantity ?? ''))}</td><td class="mono">${escapeHtml(r.date_issued||'')}</td>
+        tr.innerHTML = `<td>${i+1}</td><td>${escapeHtml(r.consumable_name||'')}</td>
+          <td class="mono">${escapeHtml(String(r.quantity ?? ''))}</td>
+          <td class="mono">${escapeHtml(r.date_issued||'')}</td>
           <td><button class="btn danger">Delete</button></td>`;
-        tr.querySelector('button').onclick = async ()=>{
-          await api('consumable_delete', {id:r.id});
-          toast('Deleted','success');
+        tr.querySelector('button').onclick = async () => {
+          await api('consumable_delete', {id: r.id});
+          toast('Deleted', 'success');
           refreshLists();
         };
         return tr;
       });
 
+      // Follow-ups
       const fu = await api('followup_list', {consultation_id: cid});
-      renderTable('fuTable', fu, 8, (r,i)=>{
+      renderTable('fuTable', fu, 8, (r, i) => {
         const tr = document.createElement('tr');
-        tr.innerHTML = `<td>${i+1}</td><td class="mono">${escapeHtml(r.followup_date||'')}</td>
+        tr.innerHTML = `<td>${i+1}</td>
+          <td class="mono">${escapeHtml(r.followup_date||'')}</td>
           <td>${r.programmed_visit == 1 ? '<span class="pill ok">Yes</span>' : '<span class="pill">No</span>'}</td>
-          <td>${escapeHtml(r.conclusion_examination||'')}</td><td class="mono">${escapeHtml(r.next_appointment_date||'')}</td>
-          <td>${escapeHtml(r.complaint_diagnosis||'')}</td><td>${escapeHtml(r.treatment_comments||'')}</td>
+          <td>${escapeHtml(r.conclusion_examination||'')}</td>
+          <td class="mono">${escapeHtml(r.next_appointment_date||'')}</td>
+          <td>${escapeHtml(r.complaint_diagnosis||'')}</td>
+          <td>${escapeHtml(r.treatment_comments||'')}</td>
           <td><button class="btn danger">Delete</button></td>`;
-        tr.querySelector('button').onclick = async ()=>{
-          await api('followup_delete', {id:r.id});
-          toast('Deleted','success');
+        tr.querySelector('button').onclick = async () => {
+          await api('followup_delete', {id: r.id});
+          toast('Deleted', 'success');
           refreshLists();
         };
         return tr;
       });
 
+      // Discharge (populate form fields)
       const discharge = await api('discharge_get', {consultation_id: cid});
-      $('discharging_status').value = discharge.discharging_status ?? '';
-      $('discharge_date').value = discharge.discharge_date ?? '';
+      $('discharging_status').value  = discharge.discharging_status  ?? '';
+      $('discharge_date').value      = discharge.discharge_date      ?? '';
       $('discharging_service').value = discharge.discharging_service ?? '';
-      $('clinical_summary').value = discharge.clinical_summary ?? '';
+      $('clinical_summary').value    = discharge.clinical_summary    ?? '';
     }
 
+    /* ── Load patient ───────────────────────────────────────────────── */
     async function load(){
       const pid = parseInt($('patientId').value, 10);
-      if (!pid) return toast('Enter a valid patient ID','error');
+      if (!pid) return toast('Enter a valid patient ID', 'error');
       state.patientId = pid;
       state.consultationId = null;
       setConsultBadge();
+      updateTabDisabledState();
 
       const p = await api('patient_get', {patient_id: pid});
       state.patient = p;
@@ -768,55 +991,62 @@
       state.consultations = cons;
       renderSelectConsultations(cons);
       fillConsultationForm(null);
-      toast('Loaded','success');
+      toast('Patient loaded', 'success');
     }
 
+    /* ── Select existing consultation ──────────────────────────────── */
     async function selectConsultation(id){
-      state.consultationId = id ? parseInt(id,10) : null;
+      state.consultationId = id ? parseInt(id, 10) : null;
       setConsultBadge();
-      if (!state.consultationId) { fillConsultationForm(null); return; }
+      updateTabDisabledState();
+      if (!state.consultationId){ fillConsultationForm(null); return; }
       const r = await api('consultation_getById', {consultation_id: state.consultationId});
       fillConsultationForm(r.consultation);
       await refreshLists();
     }
 
+    /* ── New consultation ───────────────────────────────────────────── */
     async function newConsultation(){
       const pid = parseInt($('patientId').value, 10);
-      if (!pid) return toast('Enter a patient ID first','error');
+      if (!pid) return toast('Enter a patient ID first', 'error');
       state.patientId = pid;
       fillConsultationForm(null);
       state.consultationId = null;
       $('consultationSelect').value = '';
       setConsultBadge();
-      toast('Fill consultation then Save','success');
+      updateTabDisabledState();
+      toast('Fill in the consultation and click Save', 'success');
       showTab('consultation');
     }
 
+    /* ── Save consultation ──────────────────────────────────────────── */
     async function saveConsultation(){
-      if (!state.patientId) return toast('Load a patient first','error');
+      if (!state.patientId) return toast('Load a patient first', 'error');
       const payload = collectConsultationPayload();
       try {
         if (!state.consultationId){
           const r = await api('consultation_create', payload);
           state.consultationId = r.consultation_id;
           setConsultBadge();
-          toast('Consultation created','success');
+          toast('Consultation created', 'success');
         } else {
           await api('consultation_update', {consultation_id: state.consultationId, ...payload});
-          toast('Consultation updated','success');
+          toast('Consultation updated', 'success');
         }
         const cons = await api('consultation_get', {patient_id: state.patientId});
         state.consultations = cons;
         renderSelectConsultations(cons);
         $('consultationSelect').value = String(state.consultationId);
+        updateTabDisabledState();
         await refreshLists();
-      } catch (e){
-        toast(e.message || 'Save failed','error');
+      } catch(e){
+        toast(e.message || 'Save failed', 'error');
       }
     }
 
+    /* ── Add investigation ──────────────────────────────────────────── */
     async function addInvestigation(){
-      try{
+      try {
         guardConsultation();
         const payload = {
           consultation_id: state.consultationId,
@@ -826,14 +1056,15 @@
           performed_date: $('inv_performed_date').value || null,
         };
         await api('investigation_create', payload);
-        $('inv_exam_name').value=''; $('inv_results').value=''; $('inv_performed_date').value='';
-        toast('Added','success');
+        $('inv_exam_name').value = ''; $('inv_results').value = ''; $('inv_performed_date').value = '';
+        toast('Investigation added', 'success');
         await refreshLists();
-      }catch(e){ toast(e.message,'error'); }
+      } catch(e){ toast(e.message, 'error'); }
     }
 
+    /* ── Add diagnosis ──────────────────────────────────────────────── */
     async function addDiagnosis(){
-      try{
+      try {
         guardConsultation();
         const payload = {
           consultation_id: state.consultationId,
@@ -844,14 +1075,15 @@
           clinical_notes: $('dx_notes').value || null,
         };
         await api('diagnosis_create', payload);
-        $('dx_name').value=''; $('dx_code').value=''; $('dx_date').value=''; $('dx_notes').value='';
-        toast('Added','success');
+        $('dx_name').value = ''; $('dx_code').value = ''; $('dx_date').value = ''; $('dx_notes').value = '';
+        toast('Diagnosis added', 'success');
         await refreshLists();
-      }catch(e){ toast(e.message,'error'); }
+      } catch(e){ toast(e.message, 'error'); }
     }
 
+    /* ── Add treatment ──────────────────────────────────────────────── */
     async function addTreatment(){
-      try{
+      try {
         guardConsultation();
         const payload = {
           consultation_id: state.consultationId,
@@ -863,92 +1095,96 @@
           duration: $('tx_duration').value || null,
         };
         await api('treatment_create', payload);
-        $('tx_med').value=''; $('tx_dosage').value=''; $('tx_route').value=''; $('tx_frequency').value=''; $('tx_duration').value='';
-        toast('Added','success');
+        $('tx_med').value = ''; $('tx_dosage').value = ''; $('tx_route').value = ''; $('tx_frequency').value = ''; $('tx_duration').value = '';
+        toast('Treatment added', 'success');
         await refreshLists();
-      }catch(e){ toast(e.message,'error'); }
+      } catch(e){ toast(e.message, 'error'); }
     }
 
+    /* ── Add consumable ─────────────────────────────────────────────── */
     async function addConsumable(){
-      try{
+      try {
         guardConsultation();
         const payload = {
           consultation_id: state.consultationId,
           patient_id: state.patientId,
           consumable_name: $('co_name').value,
-          quantity: $('co_qty').value || 1,
+          quantity: parseInt($('co_qty').value, 10) || 1,
           date_issued: $('co_date').value || null,
         };
         await api('consumable_create', payload);
-        $('co_name').value=''; $('co_qty').value=1; $('co_date').value='';
-        toast('Added','success');
+        $('co_name').value = ''; $('co_qty').value = 1; $('co_date').value = '';
+        toast('Consumable added', 'success');
         await refreshLists();
-      }catch(e){ toast(e.message,'error'); }
+      } catch(e){ toast(e.message, 'error'); }
     }
 
+    /* ── Save discharge ─────────────────────────────────────────────── */
     async function saveDischarge(){
-      try{
+      try {
         guardConsultation();
         const payload = {
           consultation_id: state.consultationId,
-          discharging_status: $('discharging_status').value || null,
-          discharge_date: $('discharge_date').value || null,
+          discharging_status:  $('discharging_status').value  || null,
+          discharge_date:      $('discharge_date').value      || null,
           discharging_service: $('discharging_service').value || null,
-          clinical_summary: $('clinical_summary').value || null,
+          clinical_summary:    $('clinical_summary').value    || null,
         };
         await api('discharge_save', payload);
-        toast('Discharge saved','success');
-      }catch(e){ toast(e.message,'error'); }
+        toast('Discharge saved', 'success');
+      } catch(e){ toast(e.message, 'error'); }
     }
 
+    /* ── Add follow-up ──────────────────────────────────────────────── */
     async function addFollowup(){
-      try{
+      try {
         guardConsultation();
         const payload = {
           consultation_id: state.consultationId,
           patient_id: state.patientId,
           followup_date: $('fu_date').value || null,
-          programmed_visit: parseInt($('fu_programmed').value,10),
+          programmed_visit: parseInt($('fu_programmed').value, 10),
           conclusion_examination: $('fu_conclusion').value || null,
           next_appointment_date: $('fu_next').value || null,
           complaint_diagnosis: $('fu_complaint').value || null,
           treatment_comments: $('fu_treatment').value || null,
         };
         await api('followup_create', payload);
-        $('fu_date').value=''; $('fu_programmed').value='0'; $('fu_next').value=''; $('fu_complaint').value=''; $('fu_conclusion').value=''; $('fu_treatment').value='';
-        toast('Added','success');
+        $('fu_date').value = ''; $('fu_programmed').value = '0';
+        $('fu_next').value = ''; $('fu_complaint').value = '';
+        $('fu_conclusion').value = ''; $('fu_treatment').value = '';
+        toast('Follow-up entry added', 'success');
         await refreshLists();
-      }catch(e){ toast(e.message,'error'); }
+      } catch(e){ toast(e.message, 'error'); }
     }
 
-    // Init
+    /* ── Init ───────────────────────────────────────────────────────── */
     wireTabs();
     setConsultBadge();
+    renderPatient(null);
 
-    $('btnLoad').onclick = ()=> load().catch(e=>toast(e.message,'error'));
-    $('btnNew').onclick = ()=> newConsultation();
-    $('consultationSelect').onchange = (e)=> selectConsultation(e.target.value).catch(err=>toast(err.message,'error'));
+    $('btnLoad').onclick = () => load().catch(e => toast(e.message, 'error'));
+    $('btnNew').onclick  = () => newConsultation();
+    $('consultationSelect').onchange = e => selectConsultation(e.target.value).catch(err => toast(err.message, 'error'));
 
-    ['height_cm','weight_kg','systolic_bp','diastolic_bp'].forEach(id=>{
+    ['height_cm','weight_kg','systolic_bp','diastolic_bp'].forEach(id => {
       $(id).addEventListener('input', calcBmiBp);
     });
 
-    $('btnSaveConsultation').onclick = ()=> saveConsultation();
-    $('btnAddInvestigation').onclick = ()=> addInvestigation();
-    $('btnAddDiagnosis').onclick = ()=> addDiagnosis();
-    $('btnAddTreatment').onclick = ()=> addTreatment();
-    $('btnAddConsumable').onclick = ()=> addConsumable();
-    $('btnSaveDischarge').onclick = ()=> saveDischarge();
-    $('btnAddFollowup').onclick = ()=> addFollowup();
+    $('btnSaveConsultation').onclick = () => saveConsultation();
+    $('btnAddInvestigation').onclick = () => addInvestigation();
+    $('btnAddDiagnosis').onclick     = () => addDiagnosis();
+    $('btnAddTreatment').onclick     = () => addTreatment();
+    $('btnAddConsumable').onclick    = () => addConsumable();
+    $('btnSaveDischarge').onclick    = () => saveDischarge();
+    $('btnAddFollowup').onclick      = () => addFollowup();
 
-    // Convenience: load patient_id from query string (?patient_id=123)
-    const url = new URL(window.location.href);
-    const qpid = url.searchParams.get('patient_id');
+    // Auto-load if patient_id is in the URL query string (?patient_id=123)
+    const qpid = new URL(window.location.href).searchParams.get('patient_id');
     if (qpid){
       $('patientId').value = qpid;
-      load().catch(e=>toast(e.message,'error'));
+      load().catch(e => toast(e.message, 'error'));
     }
   </script>
 </body>
 </html>
-

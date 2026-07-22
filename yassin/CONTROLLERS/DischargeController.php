@@ -30,6 +30,8 @@ class DischargeController {
 
     /**
      * Handle discharge_save action
+     * Uses saveDischargeOnly() to avoid overwriting vital signs stored
+     * by the consultation save.
      */
     public function save(array $input): void {
         $consultationId = (int)($input['consultation_id'] ?? 0);
@@ -39,19 +41,15 @@ class DischargeController {
             exit;
         }
 
-        // Need patient_id to create row if missing
+        // Need patient_id to insert a new row if the assessment record doesn't exist yet
         $patientId = $this->consultationModel->getPatientId($consultationId);
 
-        $this->model->upsert(
-            $patientId,
-            $consultationId,
-            $input,
-            null, null, null, null,
-            null, null, null
-        );
+        // Save ONLY discharge columns – vitals are left untouched
+        $this->model->saveDischargeOnly($patientId, $consultationId, $input);
 
         http_response_code(200);
         echo json_encode(['success' => true, 'message' => 'Discharge saved', 'data' => ['consultation_id' => $consultationId]]);
         exit;
     }
 }
+

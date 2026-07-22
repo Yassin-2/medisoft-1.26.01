@@ -102,6 +102,57 @@ class AssessmentDischargeModel extends BaseModel {
     }
 
     /**
+     * Save ONLY discharge fields (does not touch vital signs).
+     * Inserts a new row if none exists for this consultation; otherwise
+     * updates only the four discharge columns.
+     */
+    public function saveDischargeOnly(int $patientId, int $consultationId, array $data): void {
+        $stmt = $this->db->prepare("SELECT id FROM dental_assessment_invest_discharge WHERE consultation_id=:cid LIMIT 1");
+        $stmt->execute([':cid' => $consultationId]);
+        $existing = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        $dischargingStatus  = $this->toNullableString($data['discharging_status'] ?? null);
+        $dischargeDate      = $this->toNullableString($data['discharge_date'] ?? null);
+        $dischargingService = $this->toNullableString($data['discharging_service'] ?? null);
+        $clinicalSummary    = $this->toNullableString($data['clinical_summary'] ?? null);
+
+        if (!$existing) {
+            // Insert a minimal row – vitals remain NULL until consultation is saved
+            $stmt2 = $this->db->prepare("
+                INSERT INTO dental_assessment_invest_discharge
+                  (patient_id, consultation_id, discharging_status, discharge_date, discharging_service, clinical_summary)
+                VALUES
+                  (:pid, :cid, :ds, :dd, :dsv, :cs)
+            ");
+            $stmt2->execute([
+                ':pid' => $patientId,
+                ':cid' => $consultationId,
+                ':ds'  => $dischargingStatus,
+                ':dd'  => $dischargeDate,
+                ':dsv' => $dischargingService,
+                ':cs'  => $clinicalSummary,
+            ]);
+            return;
+        }
+
+        $stmt3 = $this->db->prepare("
+            UPDATE dental_assessment_invest_discharge SET
+              discharging_status  = :ds,
+              discharge_date      = :dd,
+              discharging_service = :dsv,
+              clinical_summary    = :cs
+            WHERE id = :id
+        ");
+        $stmt3->execute([
+            ':ds'  => $dischargingStatus,
+            ':dd'  => $dischargeDate,
+            ':dsv' => $dischargingService,
+            ':cs'  => $clinicalSummary,
+            ':id'  => (int)$existing['id'],
+        ]);
+    }
+
+    /**
      * Get discharge information by consultation ID
      */
     public function getDischarge(int $consultationId): array {
