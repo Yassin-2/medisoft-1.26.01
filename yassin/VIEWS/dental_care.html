@@ -479,7 +479,7 @@
   <div class="toast" id="toast"></div>
 
   <script>
-    const API = './api/dental.php';
+    const API = '../APIs/dental.php';
 
     const TABS = [
       ['consultation','Consultation'],
@@ -529,7 +529,7 @@
       const grid = $('patientGrid');
       const fields = [
         ['Patient', p?.patient_id ? `${p.patient_id}${p.patient_name ? ' — ' + p.patient_name : ''}` : '—'],
-        ['Insurance', p?.insurance ?? '—'],
+        ['Insurance (Card #)', p?.insurance ?? '—'],
         ['Consultation date', p?.consultation_date ?? '—'],
         ['Catchment area', p?.catchment_area ?? '—'],
         ['Province', p?.province ?? '—'],
@@ -542,7 +542,7 @@
       fields.forEach(([k,v])=>{
         const el = document.createElement('div');
         el.className = 'kv';
-        el.innerHTML = `<div class="k">${k}</div><div class="v">${escapeHtml(String(v))}</div>`;
+        el.innerHTML = `<div class="k">${k}</div><div class="v">${escapeHtml(String(v ?? '—'))}</div>`;
         grid.appendChild(el);
       });
     }
